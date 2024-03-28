@@ -2,7 +2,7 @@ train: ../train/images
 val: ../valid/images
 
 nc: 2
-names: ['Henneguya, 'Myxobolus']
+names: ['Henneguya', 'Myxobolus']
 
 roboflow:
   workspace: z9999
