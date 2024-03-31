@@ -145,6 +145,8 @@ with tab3:
     import av
     from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
     
+    # Assumindo que a instância yolo da classe YOLO_Pred já foi inicializada em outra aba
+    
     class YOLO_Pred(VideoProcessorBase):
         def __init__(self, yolo_model):
             super().__init__()
@@ -155,13 +157,11 @@ with tab3:
             pred_img = self.yolo.predictions(img)
             return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
     
-    # Load YOLO model outside of YOLO_Pred class
-    yolo_model = YOLO_Pred('./best.onnx', './data.yaml')
-    
     # Create WebRTC streamer with video processor factory
     webrtc_streamer(key="example",
-                    video_processor_factory=lambda: YOLO_Pred(yolo_model),
+                    video_processor_factory=lambda: YOLO_Pred(yolo),
                     media_stream_constraints={"video": True, "audio": False})
+
 
 
     
