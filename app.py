@@ -146,27 +146,23 @@ with tab3:
     from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
     
     class YOLO_Pred(VideoProcessorBase):
-        def __init__(self, model_path, data_path):
+        def __init__(self, yolo_model):
             super().__init__()
-            # Load YOLO model and data
-            self.yolo = YOLO_Pred(model_path, data_path)
+            self.yolo = yolo_model
     
         def on_frame(self, frame: av.VideoFrame) -> av.VideoFrame:
             img = frame.to_ndarray(format="bgr24")
             pred_img = self.yolo.predictions(img)
             return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
     
-    # Initialize YOLO_Pred instance
-    yolo = YOLO_Pred('./best.onnx', './data.yaml')
+    # Load YOLO model outside of YOLO_Pred class
+    yolo_model = YOLO_Pred('./best.onnx', './data.yaml')
     
-    # Define video frame callback function
-    def video_frame_callback(frame):
-        return yolo.on_frame(frame)
-    
-    # Create WebRTC streamer with video frame callback
+    # Create WebRTC streamer with video processor factory
     webrtc_streamer(key="example",
-                    video_processor_factory=YOLO_Pred,
+                    video_processor_factory=lambda: YOLO_Pred(yolo_model),
                     media_stream_constraints={"video": True, "audio": False})
+
 
     
 #    from streamlit_webrtc import webrtc_streamer
