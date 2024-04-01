@@ -3,7 +3,7 @@ import streamlit as st
 # Configuração da página
     
 st.set_page_config(
-    page_title= "AIπ",
+    page_title= "πFINDER",
     page_icon= "🔬",  # Defina o ícone da página como um emoji de tubarão
     layout="wide",  # Defina o layout como "wide" para aproveitar melhor o espaço na tela
     initial_sidebar_state="collapsed"  # Defina a barra lateral como colapsada
@@ -62,7 +62,7 @@ with tab1:
             )
 
 # Adicione as informações adicionais
-st.write("Desenvolvido por [Carneiro, G.S](http://lattes.cnpq.br/3771047626259544)")
+st.write("Desenvolvido por [Carneiro, G.S]( http://lattes.cnpq.br/3771047626259544) em colaboração com o com o LIM²T-Ufra")
 
 pass
 #######################################################
@@ -141,28 +141,51 @@ with tab2:
 
 #################################
 with tab3:
-    
-    from streamlit_webrtc import webrtc_streamer
+
     import av
-    from yolo_predictions import YOLO_Pred
+    from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
     
-    # load yolo model
-    yolo = YOLO_Pred('./best.onnx',
-                     './data.yaml')
+    # Assumindo que a instância yolo da classe YOLO_Pred já foi inicializada em outra aba
+    
+    class YOLO_Pred(VideoProcessorBase):
+        def __init__(self, yolo_model):
+            super().__init__()
+            self.yolo = yolo_model
+    
+        def on_frame(self, frame: av.VideoFrame) -> av.VideoFrame:
+            img = frame.to_ndarray(format="bgr24")
+            pred_img = self.yolo.predictions(img)
+            return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
+    
+    # Create WebRTC streamer with video processor factory
+    webrtc_streamer(key="example",
+                    video_processor_factory=lambda: YOLO_Pred(yolo),
+                    media_stream_constraints={"video": True, "audio": False})
+
+
+
+    
+#    from streamlit_webrtc import webrtc_streamer
+#    import av
+#    from yolo_predictions import YOLO_Pred
+    
+#    # load yolo model
+#    yolo = YOLO_Pred('./best.onnx',
+#                     './data.yaml')
     
     
-    def video_frame_callback(frame):
-        img = frame.to_ndarray(format="bgr24")
-        # any operation 
-        #flipped = img[::-1,:,:]
-        pred_img = yolo.predictions(img)
+#    def video_frame_callback(frame):
+#        img = frame.to_ndarray(format="bgr24")
+#        # any operation 
+#        #flipped = img[::-1,:,:]
+#        pred_img = yolo.predictions(img)
     
-        return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
+#        return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
     
     
-    webrtc_streamer(key="example", 
-                    video_frame_callback=video_frame_callback,
-                    media_stream_constraints={"video":True,"audio":False})
+#    webrtc_streamer(key="example", 
+#                    video_frame_callback=video_frame_callback,
+#                    media_stream_constraints={"video":True,"audio":False})
 
 
 
