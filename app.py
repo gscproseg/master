@@ -160,7 +160,7 @@ with tab3:
     # Create WebRTC streamer with video processor factory
     webrtc_streamer(key="example",
                     video_processor_factory=lambda: YOLO_Pred(yolo),
-                    media_stream_constraints={"video": True, "audio": False})
+                    media_stream_constraints={"video": True, "audio": True})
 
 
 
