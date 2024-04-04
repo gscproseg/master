@@ -147,7 +147,7 @@ with tab3:
     
     # Assumindo que a instância yolo da classe YOLO_Pred já foi inicializada em outra aba
     
-    class YOLO_Pred(VideoProcessorBase):
+    class YOLO_Pred_Video(VideoProcessorBase):
         def __init__(self, yolo_model):
             super().__init__()
             self.yolo = yolo_model
@@ -159,8 +159,8 @@ with tab3:
     
     # Create WebRTC streamer with video processor factory
     webrtc_streamer(key="example",
-                    video_processor_factory=lambda: YOLO_Pred(yolo),
-                    media_stream_constraints={"video": True, "audio": True})
+                    video_processor_factory=lambda: YOLO_Pred_Video(yolo),
+                    media_stream_constraints={"video": True, "audio": False})
 
 
 
