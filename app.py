@@ -142,25 +142,48 @@ with tab2:
 #################################
 with tab3:
 
+    import streamlit as st 
+    from streamlit_webrtc import webrtc_streamer
     import av
-    from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
+    from yolo_predictions import YOLO_Pred
     
+    # load yolo model
+    yolo = YOLO_Pred('./models/best.onnx',
+                     './models/data.yaml')
+    
+    
+    def video_frame_callback(frame):
+        img = frame.to_ndarray(format="bgr24")
+        # any operation 
+        #flipped = img[::-1,:,:]
+        pred_img = yolo.predictions(img)
+    
+        return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
+    
+    
+    webrtc_streamer(key="example", 
+                    video_frame_callback=video_frame_callback,
+                    media_stream_constraints={"video":True,"audio":False})
+
+#    import av
+#    from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
+#    
     # Assumindo que a instância yolo da classe YOLO_Pred já foi inicializada em outra aba
     
-    class YOLO_Pred_Video(VideoProcessorBase):
-        def __init__(self, yolo_model):
-            super().__init__()
-            self.yolo = yolo_model
+#    class YOLO_Pred_Video(VideoProcessorBase):
+#        def __init__(self, yolo_model):
+#            super().__init__()
+#            self.yolo = yolo_model
     
-        def on_frame(self, frame: av.VideoFrame) -> av.VideoFrame:
-            img = frame.to_ndarray(format="bgr24")
-            pred_img = self.yolo.predictions(img)
-            return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
+#        def on_frame(self, frame: av.VideoFrame) -> av.VideoFrame:
+#            img = frame.to_ndarray(format="bgr24")
+#            pred_img = self.yolo.predictions(img)
+#            return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
     
     # Create WebRTC streamer with video processor factory
-    webrtc_streamer(key="example",
-                    video_processor_factory=lambda: YOLO_Pred_Video(yolo),
-                    media_stream_constraints={"video": True, "audio": False})
+#    webrtc_streamer(key="example",
+#                    video_processor_factory=lambda: YOLO_Pred_Video(yolo),
+#                    media_stream_constraints={"video": True, "audio": False})
 
 
 
