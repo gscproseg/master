@@ -156,7 +156,7 @@ with tab3:
     
     webrtc_streamer(key="example", 
                     video_frame_callback=video_frame_callback,
-                    #media_stream_constraints={"video":True,"audio":False})
+                    media_stream_constraints={"video":True,"audio":False})
 
 #    import av
 #    from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
