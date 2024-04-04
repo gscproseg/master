@@ -145,18 +145,21 @@ with tab3:
     import streamlit as st 
     from streamlit_webrtc import webrtc_streamer
     import av
-       
+
+
+# Conteúdo da página "📸- Cam"
+with tab3:
     def video_frame_callback(frame):
         img = frame.to_ndarray(format="bgr24")
-        # any operation 
+        # qualquer operação
+        # Aqui você precisa garantir que 'yolo' seja acessível dentro de 'video_frame_callback'
         pred_img = yolo.predictions(img)
-    
-        return av.VideoFrame.from_ndarray(img, format="bgr24")
-    
-    
-    webrtc_streamer(key="example", 
+
+        return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
+
+    webrtc_streamer(key="example",
                     video_frame_callback=video_frame_callback,
-                    media_stream_constraints={"video":True,"audio":False})
+                    media_stream_constraints={"video": True, "audio": False})
 
 #    import av
 #    from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
