@@ -160,15 +160,12 @@ with tab3:
     
     # Classe para transformar o vídeo da webcam
     class ObjectDetector(VideoTransformerBase):
-        def __init__(self):
-            # Inicialize o modelo YOLO aqui
-            self.yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
         def transform(self, frame):
             img = frame.to_ndarray(format="bgr24")
     
             # Faça a detecção de objetos com o modelo YOLO
-            pred_img = self.yolo.predictions(img)
+            pred_img = yolo.predictions(img)
     
             return pred_img
     
