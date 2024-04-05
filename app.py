@@ -149,92 +149,45 @@ with tab3:
 
 # Conteúdo da página "📸- Cam"
 with tab3:
-
     import streamlit as st 
-    from streamlit_webrtc import webrtc_streamer
-    import av
-    from PIL import Image  # Importe Image do PIL para trabalhar com imagens
+    from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
+    import cv2
+    from PIL import Image
+    import numpy as np
     
-    # Certifique-se de que 'yolo' está importado ou definido corretamente antes desta linha
+    # Importe e configure o modelo YOLO aqui
+    # Exemplo:
+    # from my_yolo_module import YOLO
+    # yolo = YOLO()
     
-    def video_frame_callback(frame):
-        img = frame.to_ndarray(format="bgr24")
-        # Qualquer operação
-        # Aqui você precisa garantir que 'yolo' seja acessível dentro de 'video_frame_callback'
-        pred_vid = yolo.predictions(img)
-        pred_vid_obj = Image.fromarray(pred_vid)
-        prediction = True
+    class ObjectDetector(VideoTransformerBase):
+        def __init__(self):
+            # Inicialize o modelo YOLO aqui, se necessário
+            pass
     
-        # Certifique-se de que o retorno está correto e no formato esperado pela função webrtc_streamer
-        return av.VideoFrame.from_ndarray(pred_vid_obj, format="bgr24")
+        def transform(self, frame):
+            img = frame.to_ndarray(format="bgr24")
     
-    # Conteúdo da página "📸- Cam"
-    with st.sidebar:
-        st.write("Menu lateral")
+            # Faça previsões com YOLO
+            # pred_img = yolo.predictions(img)
     
-    with st.expander("Conteúdo da página"):
-        webrtc_streamer(key="example",
-                        video_frame_callback=video_frame_callback,
-                        media_stream_constraints={"video": True, "audio": False})
+            # Aqui vamos fazer uma transformação simples para exibir o vídeo da webcam sem processamento
+            return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    
+    def main():
+        st.title("Detecção de Objetos em Vídeo")
+    
+        object_detector = ObjectDetector()
+    
+        # Conteúdo da página
+        with st.expander("Conteúdo da página"):
+            webrtc_streamer(key="example",
+                            video_transformer_factory=object_detector,
+                            media_stream_constraints={"video": True})
+    
+    if __name__ == "__main__":
+        main()
 
-#    def video_frame_callback(frame):
-#        img = frame.to_ndarray(format="bgr24")
-#        # qualquer operação
-#        # Aqui você precisa garantir que 'yolo' seja acessível dentro de 'video_frame_callback'
-#        pred_vid = yolo.predictions(img)
-#        pred_vid_obj = Image.fromarray(pred_vid)
-#        prediction = True
-
-#        return av.VideoFrame.from_ndarray(pred_vid, format="bgr24")
-
-    #webrtc_streamer(key="example",
-     #               video_frame_callback=video_frame_callback,
-     #               media_stream_constraints={"video": True, "audio": False})
-
-#    import av
-#    from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
-#    
-    # Assumindo que a instância yolo da classe YOLO_Pred já foi inicializada em outra aba
-    
-#    class YOLO_Pred_Video(VideoProcessorBase):
-#        def __init__(self, yolo_model):
-#            super().__init__()
-#            self.yolo = yolo_model
-    
-#        def on_frame(self, frame: av.VideoFrame) -> av.VideoFrame:
-#            img = frame.to_ndarray(format="bgr24")
-#            pred_img = self.yolo.predictions(img)
-#            return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
-    
-    # Create WebRTC streamer with video processor factory
-#    webrtc_streamer(key="example",
-#                    video_processor_factory=lambda: YOLO_Pred_Video(yolo),
-#                    media_stream_constraints={"video": True, "audio": False})
-
-
-
-    
-#    from streamlit_webrtc import webrtc_streamer
-#    import av
-#    from yolo_predictions import YOLO_Pred
-    
-#    # load yolo model
-#    yolo = YOLO_Pred('./best.onnx',
-#                     './data.yaml')
-    
-    
-#    def video_frame_callback(frame):
-#        img = frame.to_ndarray(format="bgr24")
-#        # any operation 
-#        #flipped = img[::-1,:,:]
-#        pred_img = yolo.predictions(img)
-    
-#        return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
-    
-    
-#    webrtc_streamer(key="example", 
-#                    video_frame_callback=video_frame_callback,
-#                    media_stream_constraints={"video":True,"audio":False})
 
 
 
