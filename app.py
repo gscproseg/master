@@ -154,7 +154,7 @@ with tab3:
         # qualquer operação
         # Aqui você precisa garantir que 'yolo' seja acessível dentro de 'video_frame_callback'
         pred_vid = yolo.predictions(img)
-        pred_img_obj = Image.fromarray(pred_vid)
+        pred_vid_obj = Image.fromarray(pred_vid)
         prediction = True
 
         return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
