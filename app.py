@@ -149,42 +149,35 @@ with tab3:
 
 # Conteúdo da página "📸- Cam"
 with tab3:
-    
-    
     import streamlit as st
-    from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
+    from streamlit_webrtc import webrtc_streamer
+    from yolo_predictions import YOLO_Pred  # Importe sua classe YOLO_Pred
     import cv2
     import numpy as np
-    from PIL import Image
-    from yolo_predictions import YOLO_Pred  # Importe sua classe YOLO_Pred
     
-    # Classe para transformar o vídeo da webcam
-    class ObjectDetector(VideoTransformerBase):
+    # Criação da instância do modelo YOLO
+    yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')  # Substitua pelos caminhos corretos
     
-        def transform(self, frame):
-            img = frame.to_ndarray(format="bgr24")
-    
-            # Faça a detecção de objetos com o modelo YOLO
-            pred_img = yolo.predictions(img)
-    
-            return pred_img
+    # Função de callback para processar o vídeo da webcam
+    def video_frame_callback(frame):
+        img = frame.to_ndarray(format="bgr24")
+        
+        # Faça a detecção de objetos com o modelo YOLO
+        pred_img = yolo.predictions(img)
+        
+        return pred_img
     
     def main():
-        st.title("Detecção de Objetos em Vídeo")
-    
-        object_detector = ObjectDetector()
-    
-        # Aba 3 - Detecção de objetos com YOLO
-        with st.sidebar:
-            st.write("Menu lateral")
-    
-        with st.expander("Detecção de Objetos (YOLO)"):
-            webrtc_streamer(key="example",
-                            video_transformer_factory=object_detector,
-                            media_stream_constraints={"video": True})
+        st.title("Detecção de Objetos em Vídeo com YOLO")
+        
+        # Componente do Streamlit para captura de vídeo da webcam e processamento
+        webrtc_streamer(key="example",
+                        video_frame_callback=video_frame_callback,
+                        media_stream_constraints={"video": True, "audio": False})
     
     if __name__ == "__main__":
         main()
+
 
 
 
