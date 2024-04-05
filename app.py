@@ -154,9 +154,7 @@ with tab3:
     from yolo_predictions import YOLO_Pred  # Importe sua classe YOLO_Pred
     import cv2
     import numpy as np
-    
-    # Criação da instância do modelo YOLO
-    yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')  # Substitua pelos caminhos corretos
+
     
     # Função de callback para processar o vídeo da webcam
     def video_frame_callback(frame):
