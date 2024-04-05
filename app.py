@@ -149,19 +149,47 @@ with tab3:
 
 # Conteúdo da página "📸- Cam"
 with tab3:
+
+    import streamlit as st 
+    from streamlit_webrtc import webrtc_streamer
+    import av
+    from PIL import Image  # Importe Image do PIL para trabalhar com imagens
+    
+    # Certifique-se de que 'yolo' está importado ou definido corretamente antes desta linha
+    
     def video_frame_callback(frame):
         img = frame.to_ndarray(format="bgr24")
-        # qualquer operação
+        # Qualquer operação
         # Aqui você precisa garantir que 'yolo' seja acessível dentro de 'video_frame_callback'
         pred_vid = yolo.predictions(img)
         pred_vid_obj = Image.fromarray(pred_vid)
         prediction = True
+    
+        # Certifique-se de que o retorno está correto e no formato esperado pela função webrtc_streamer
+        return av.VideoFrame.from_ndarray(pred_vid_obj, format="bgr24")
+    
+    # Conteúdo da página "📸- Cam"
+    with st.sidebar:
+        st.write("Menu lateral")
+    
+    with st.expander("Conteúdo da página"):
+        webrtc_streamer(key="example",
+                        video_frame_callback=video_frame_callback,
+                        media_stream_constraints={"video": True, "audio": False})
 
-        return av.VideoFrame.from_ndarray(pred_vid, format="bgr24")
+#    def video_frame_callback(frame):
+#        img = frame.to_ndarray(format="bgr24")
+#        # qualquer operação
+#        # Aqui você precisa garantir que 'yolo' seja acessível dentro de 'video_frame_callback'
+#        pred_vid = yolo.predictions(img)
+#        pred_vid_obj = Image.fromarray(pred_vid)
+#        prediction = True
 
-    webrtc_streamer(key="example",
-                    video_frame_callback=video_frame_callback,
-                    media_stream_constraints={"video": True, "audio": False})
+#        return av.VideoFrame.from_ndarray(pred_vid, format="bgr24")
+
+    #webrtc_streamer(key="example",
+     #               video_frame_callback=video_frame_callback,
+     #               media_stream_constraints={"video": True, "audio": False})
 
 #    import av
 #    from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
