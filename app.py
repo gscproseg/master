@@ -154,7 +154,6 @@ with tab3:
         # qualquer operação
         # Aqui você precisa garantir que 'yolo' seja acessível dentro de 'video_frame_callback'
         pred_vid = yolo.predictions(img)
-        pred_vid = yolo.predictions(image)
         pred_img_obj = Image.fromarray(pred_vid)
         prediction = True
 
