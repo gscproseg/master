@@ -153,7 +153,10 @@ with tab3:
         img = frame.to_ndarray(format="bgr24")
         # qualquer operação
         # Aqui você precisa garantir que 'yolo' seja acessível dentro de 'video_frame_callback'
-        pred_img = yolo.predictions(img)
+        pred_vid = yolo.predictions(img)
+        pred_vid = yolo.predictions(image)
+        pred_img_obj = Image.fromarray(pred_vid)
+        prediction = True
 
         return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
 
