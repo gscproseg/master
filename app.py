@@ -157,7 +157,7 @@ with tab3:
         pred_vid_obj = Image.fromarray(pred_vid)
         prediction = True
 
-        return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
+        return av.VideoFrame.from_ndarray(pred_vid, format="bgr24")
 
     webrtc_streamer(key="example",
                     video_frame_callback=video_frame_callback,
