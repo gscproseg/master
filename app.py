@@ -149,45 +149,45 @@ with tab3:
 
 # Conteúdo da página "📸- Cam"
 with tab3:
-    import streamlit as st 
+    
+    
+    import streamlit as st
     from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
     import cv2
-    from PIL import Image
     import numpy as np
+    from PIL import Image
+    from yolo_predictions import YOLO_Pred  # Importe sua classe YOLO_Pred
     
-    # Importe e configure o modelo YOLO aqui
-    # Exemplo:
-    # from my_yolo_module import YOLO
-    # yolo = YOLO()
-    
+    # Classe para transformar o vídeo da webcam
     class ObjectDetector(VideoTransformerBase):
         def __init__(self):
-            # Inicialize o modelo YOLO aqui, se necessário
-            pass
+            # Inicialize o modelo YOLO aqui
+            self.yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
         def transform(self, frame):
             img = frame.to_ndarray(format="bgr24")
     
-            # Faça previsões com YOLO
-            # pred_img = yolo.predictions(img)
+            # Faça a detecção de objetos com o modelo YOLO
+            pred_img = self.yolo.predictions(img)
     
-            # Aqui vamos fazer uma transformação simples para exibir o vídeo da webcam sem processamento
-            return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            return pred_img
     
     def main():
         st.title("Detecção de Objetos em Vídeo")
     
         object_detector = ObjectDetector()
     
-        # Conteúdo da página
-        with st.expander("Conteúdo da página"):
+        # Aba 3 - Detecção de objetos com YOLO
+        with st.sidebar:
+            st.write("Menu lateral")
+    
+        with st.expander("Detecção de Objetos (YOLO)"):
             webrtc_streamer(key="example",
                             video_transformer_factory=object_detector,
                             media_stream_constraints={"video": True})
     
     if __name__ == "__main__":
         main()
-
 
 
 
