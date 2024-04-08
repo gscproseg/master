@@ -185,6 +185,9 @@ with tab3:
                 if button_detect:
                     with st.spinner('Analisando a imagem...'):
                         image_array = np.array(image_url)
+                        # Reshape para 3D se a imagem for em escala de cinza
+                        if len(image_array.shape) == 2:
+                            image_array = np.stack((image_array,) * 3, axis=-1)
                         pred_img = yolo.predictions(image_array)
                         pred_img_obj = Image.fromarray(pred_img)
                         st.subheader('Imagem com a possível detecção de Myxozoários')
