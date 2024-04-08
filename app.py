@@ -142,60 +142,47 @@ pass
 
 #################################
 with tab3:
-
-    import streamlit as st
-    from yolo_predictions import YOLO_Pred
-    from PIL import Image
+    import cv2
     import numpy as np
-    import requests
-    from io import BytesIO
+    import onnxruntime as rt
     
-    st.title('Detecção de Myxozoários')
+    class YOLO_Pred:
+        def __init__(self, onnx_model, data_yaml):
+            self.model = rt.InferenceSession(onnx_model)
+            self.classes = self.load_classes(data_yaml)
     
-    # Carregar o modelo YOLO
-    with st.spinner('Por favor, aguarde enquanto o modelo é carregado...'):
-        yolo = YOLO_Pred(onnx_model='./best.onnx',
-                         data_yaml='./data.yaml')
+        def load_classes(self, file):
+            # Carregar as classes do arquivo YAML
+            classes = []
+            with open(file, 'r') as f:
+                data = yaml.safe_load(f)
+                for i in range(data['nc']):
+                    classes.append(data['names'][i])
+            return classes
     
-    def load_image_from_url(url):
-        try:
-            response = requests.get(url)
-            if response.status_code == 200:
-                image_url = Image.open(BytesIO(response.content))
-                return image_url
-            else:
-                return None
-        except Exception as e:
-            st.error('Erro ao carregar a imagem via URL. Certifique-se de que o URL é válido.')
-            return None
+        def predictions(self, image_array):
+            input_name = self.model.get_inputs()[0].name
+            output_name = self.model.get_outputs()[0].name
     
-    def main():
-        # Campo de texto para inserir o URL da imagem
-        st.subheader('Carregar imagem via URL')
-        url = st.text_input('Digite o URL da imagem e pressione Enter:')
-        
-        if url:
-            # Carregar a imagem a partir do URL
-            image_url = load_image_from_url(url)
-            
-            if image_url is not None:
-                st.image(image_url, caption='Imagem carregada via URL', use_column_width=True)
-                button_detect = st.button('Detectar Myxozoários')
-                
-                if button_detect:
-                    with st.spinner('Analisando a imagem...'):
-                        image_array = np.array(image_url)
-                        # Reshape para 3D se a imagem for em escala de cinza
-                        if len(image_array.shape) == 2:
-                            image_array = np.stack((image_array,) * 3, axis=-1)
-                        pred_img = yolo.predictions(image_array)
-                        pred_img_obj = Image.fromarray(pred_img)
-                        st.subheader('Imagem com a possível detecção de Myxozoários')
-                        st.image(pred_img_obj, caption='Detecção de Myxozoários', use_column_width=True)
+            input_shape = self.model.get_inputs()[0].shape
+            row, col = input_shape[2], input_shape[3]
     
+            # Resize da imagem para as dimensões do modelo
+            image_resized = cv2.resize(image_array, (col, row))
+            image_resized = image_resized.transpose((2, 0, 1))  # Alterando de HWC para CHW
+            input_image = np.expand_dims(image_resized, axis=0)
+    
+            input_dict = {input_name: input_image.astype(np.float32)}
+            results = self.model.run([output_name], input_dict)
+    
+            return results[0]
+    
+    # Exemplo de uso da classe YOLO_Pred
     if __name__ == "__main__":
-        main()
-
+        yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
+        image_array = np.zeros((height, width, 3), dtype=np.uint8)  # Substitua com a imagem correta
+        pred_img = yolo.predictions(image_array)
+        print(pred_img)
 
 pass
 
