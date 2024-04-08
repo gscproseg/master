@@ -160,7 +160,7 @@ with tab3:
     class YOLOVideoTransformer(VideoTransformerBase):
         def transform(self, frame: av.VideoFrame) -> av.VideoFrame:
             img_cam = frame.to_ndarray(format="bgr24")
-            pred_img_cam = yolocam.predictions(img_cam)
+            pred_img_cam = yolo.predictions(img_cam)
             return av.VideoFrame.from_ndarray(pred_img_cam, format="bgr24")
     
     # Configurar e iniciar a transmissão WebRTC
