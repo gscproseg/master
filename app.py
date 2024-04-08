@@ -167,6 +167,12 @@ with tab3:
                     media_stream_constraints={"video":True,"audio":False})
 
 
+    if __name__ == "__main__":
+         main()
+
+pass
+
+
 
 
 
