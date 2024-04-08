@@ -77,8 +77,8 @@ with tab2:
     st.write('Por favor, carregue a imagem para obter a identificação')
 
     with st.spinner('Por favor, aguarde enquanto analisamos a sua imagem'):
-        yolo = YOLO_Pred(onnx_model='./best.onnx',
-                         data_yaml='./data.yaml')
+        yolo = YOLO_Pred(onnx_modelv='./best.onnx',
+                         data_yamlv='./data.yaml')
         #st.balloons()
 
     def upload_image():
@@ -148,7 +148,7 @@ with tab3:
     from yolo_predictions import YOLO_Pred
 
 
-    yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
+    yolocam = YOLO_Pred(onnx_model ='./best.onnx', data_yaml ='./data.yaml')
     st.balloons()
 
     
