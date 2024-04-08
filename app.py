@@ -69,7 +69,6 @@ pass
 
 # Conteúdo da página "MyxoDetect"
 with tab2:
-    
     import streamlit as st
     from yolo_predictions import YOLO_Pred
     from PIL import Image
@@ -122,20 +121,24 @@ with tab2:
     
                 # Add option to load image via URL
                 url = st.text_input('Digite o URL da imagem:')
-                if url:
+                button_url = st.button('Carregar Imagem via URL')
+                if button_url:
                     try:
                         response = requests.get(url)
-                        image_url = Image.open(BytesIO(response.content))
-                        st.image(image_url, caption='Imagem carregada via URL', use_column_width=True)
-                        button = st.button('Descubra qual o Myxozoário pode estar presente na imagem via URL')
-                        if button:
-                            with st.spinner("""
-                            Obtendo objetos da imagem. Aguarde...
-                            """):
-                                image_array = np.array(image_url)
-                                pred_img = yolo.predictions(image_array)
-                                pred_img_obj = Image.fromarray(pred_img)
-                                prediction = True
+                        if response.status_code == 200:
+                            image_url = Image.open(BytesIO(response.content))
+                            st.image(image_url, caption='Imagem carregada via URL', use_column_width=True)
+                            button = st.button('Descubra qual o Myxozoário pode estar presente na imagem via URL')
+                            if button:
+                                with st.spinner("""
+                                Obtendo objetos da imagem. Aguarde...
+                                """):
+                                    image_array = np.array(image_url)
+                                    pred_img = yolo.predictions(image_array)
+                                    pred_img_obj = Image.fromarray(pred_img)
+                                    prediction = True
+                        else:
+                            st.error('Erro ao carregar a imagem via URL. Certifique-se de que o URL é válido.')
                     except Exception as e:
                         st.error('Erro ao carregar a imagem via URL. Certifique-se de que o URL é válido.')
     
@@ -158,6 +161,7 @@ with tab2:
         main()
     
     pass
+
 
 #################################
 with tab3:
