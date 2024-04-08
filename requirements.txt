@@ -15,16 +15,12 @@ pyee==9.0.4
 PyYAML==6.0
 requests==2.28.1
 requests-toolbelt==0.10.1
-#streamlit==1.19.0
-#streamlit-webrtc===0.47.1
+streamlit==1.19.0
+streamlit-webrtc===0.47.1
 tornado==6.2
 
 pydub==0.25.1
 twilio~=8.10.1
 matplotlib
-
-streamlit<=100
-streamlit-webrtc<=100
-aioice<=100
 
 pip-upgrade
