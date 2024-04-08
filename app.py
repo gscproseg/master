@@ -153,7 +153,7 @@ with tab3:
     from yolo_predictions import YOLO_Pred
     
     # Carregue o modelo YOLO
-    yolo = YOLO_Pred('./models/best.onnx', './models/data.yaml')
+    yolo = YOLO_Pred('./best.onnx', './data.yaml')
     
     # Definir configuração RTC (WebRTC)
     rtc_configuration = RTCConfiguration(
