@@ -217,7 +217,6 @@ if __name__ == "__main__":
 
 with tab4:
 
-        import streamlit as st
     from streamlit_webrtc import webrtc_streamer
     from yolo_predictions import YOLO_Pred  # Importe sua classe YOLO_Pred
     import cv2
