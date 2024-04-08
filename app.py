@@ -143,7 +143,6 @@ pass
 #################################
 with tab3:
         
-    import streamlit as st 
     from streamlit_webrtc import webrtc_streamer
     import av
     from yolo_predictions import YOLO_Pred
@@ -166,11 +165,6 @@ with tab3:
                     video_frame_callback=video_frame_callback,
                     media_stream_constraints={"video":True,"audio":False})
 
-
-    if __name__ == "__main__":
-         main()
-
-pass
 
 
 
