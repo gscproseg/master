@@ -143,6 +143,7 @@ pass
 #################################
 with tab3:
 
+    import streamlit as st
     import logging
     from streamlit_webrtc import webrtc_streamer
     import av
@@ -160,11 +161,27 @@ with tab3:
         pred_img = yolo.predictions(img)
         return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
     
-    webrtc_streamer(
-        key="example",
-        video_frame_callback=video_frame_callback,
-        media_stream_constraints={"video": True, "audio": False}
-    )
+    def main():
+        st.title('Detecção em Tempo Real com YOLOv5')
+    
+        # Inicialize o modelo YOLOv5
+        with st.spinner('Por favor, aguarde enquanto o modelo é carregado...'):
+            yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
+    
+        # Função para processar o vídeo da webcam e realizar a detecção
+        def detect_realtime(camera_id):
+            webrtc_streamer(
+                key="example",
+                video_frame_callback=video_frame_callback,
+                media_stream_constraints={"video": True, "audio": False}
+            )
+    
+        camera_id = st.radio("Selecione a câmera:", options=[0, 1, 2, 3], index=0)
+        detect_realtime(camera_id)
+    
+    if __name__ == "__main__":
+        main()
+
 
 
 
