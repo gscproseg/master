@@ -148,8 +148,8 @@ with tab3:
     from yolo_predictions import YOLO_Pred
 
 
-    yolocam = YOLO_Pred(onnx_model = './best.onnx', 
-                        data_yaml = './data.yaml')
+    #yolocam = YOLO_Pred(onnx_model = './best.onnx', 
+    #                    data_yaml = './data.yaml')
     st.balloons()
 
     
