@@ -143,37 +143,35 @@ pass
 #################################
 with tab3:
 
-    from streamlit_webrtc import (VideoTransformerBase, RTCConfiguration, webrtc_streamer)
+    from streamlit_webrtc import VideoProcessorBase, RTCConfiguration, webrtc_streamer
     import av
     from yolo_predictions import YOLO_Pred
-
-
-    #yolocam = YOLO_Pred(onnx_model = './best.onnx', 
-    #                    data_yaml = './data.yaml')
+    
+    yolocam = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     st.balloons()
-
     
     # Definir configuração RTC (WebRTC)
     rtc_configuration = RTCConfiguration(
-        {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
+        {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+    )
     
-    class YOLOVideoTransformer(VideoTransformerBase):
-        def transform(self, frame: av.VideoFrame) -> av.VideoFrame:
+    class YOLOVideoProcessor(VideoProcessorBase):
+        def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
             img_cam = frame.to_ndarray(format="bgr24")
-            pred_img_cam = yolo.predictions(img_cam)
+            pred_img_cam = yolocam.predictions(img_cam)
             return av.VideoFrame.from_ndarray(pred_img_cam, format="bgr24")
     
     # Configurar e iniciar a transmissão WebRTC
-    video_processor_factory(
+    webrtc_ctx = webrtc_streamer(
         key="example",
-        video_transformer_factory=YOLOVideoTransformer,
+        video_processor_factory=YOLOVideoProcessor,
         rtc_configuration=rtc_configuration,
-        async_transform=True,
+        async_processing=True,
         media_stream_constraints={"video": True, "audio": False},
     )
     
     # Exibir a interface do Streamlit
-    if video_processor_factory.video_transformer:
+    if webrtc_ctx.video_processor:
         st.write("Streaming de vídeo com detecção de objetos está ativo.")
     else:
         st.write("Aguardando a transmissão de vídeo começar...")
