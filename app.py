@@ -142,7 +142,7 @@ pass
 
 #################################
 with tab3:
-        
+
     from streamlit_webrtc import webrtc_streamer
     import av
     from yolo_predictions import YOLO_Pred
