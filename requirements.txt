@@ -23,8 +23,8 @@ pydub==0.25.1
 twilio~=8.10.1
 matplotlib
 
-streamlit>=0.100
-streamlit-webrtc>=0.100
-aioice>=0.100
+streamlit
+streamlit-webrtc
+aioice
 
 pip-upgrade
