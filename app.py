@@ -143,32 +143,44 @@ pass
 #################################
 with tab3:
 
-    import av
-    from streamlit_webrtc import webrtc_streamer
-    from yolo_predictions import YOLO_Pred  # Importe sua classe YOLO_Pred
+    import streamlit as st
+    from PIL import Image
     import cv2
-    import numpy as np
+    from io import BytesIO
+    from yolov5.detect import detect
+    
+    st.title('Detecção em Tempo Real com YOLOv5')
+    
+    # Função para processar o vídeo da webcam e realizar a detecção
+    def detect_realtime():
+        # Iniciar a captura de vídeo da webcam
+        cap = cv2.VideoCapture(0)
+    
+        # Loop de processamento em tempo real
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+    
+            # Realizar a detecção de objetos
+            results = detect(frame)
+    
+            # Desenhar as caixas delimitadoras e etiquetas na imagem
+            for result in results:
+                x1, y1, x2, y2, label = result
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+    
+            # Converter a imagem para o formato adequado para exibição no Streamlit
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            image_pil = Image.fromarray(frame_rgb)
+    
+            # Exibir a imagem no Streamlit
+            st.image(image_pil, caption='Detecção em Tempo Real', use_column_width=True)
+    
+    # Executar a função para detecção em tempo real
+    detect_realtime()
 
-    
-    # Função de callback para processar o vídeo da webcam
-    def video_frame_callback(frame):
-        img = frame.to_ndarray(format="bgr24")
-        
-        # Faça a detecção de objetos com o modelo YOLO
-        pred_img = yolo.predictions(img)
-        
-        return pred_img
-    
-    def main():
-        st.title("Detecção de Objetos em Vídeo com YOLO")
-        
-        # Componente do Streamlit para captura de vídeo da webcam e processamento
-        webrtc_streamer(key="example",
-                        video_frame_callback=video_frame_callback,
-                        media_stream_constraints={"video": True, "audio": False})
-    
-    if __name__ == "__main__":
-        main()
 
 
 
