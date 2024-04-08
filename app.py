@@ -143,7 +143,6 @@ pass
 #################################
 with tab3:
 
-    import streamlit as st
     from PIL import Image
     import cv2
     from io import BytesIO
