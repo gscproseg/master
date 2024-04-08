@@ -148,7 +148,8 @@ with tab3:
     from yolo_predictions import YOLO_Pred
     
     # Carregue o modelo YOLO
-    yolo = YOLO_Pred(onnx_model="seu_modelo.onnx", data_yaml="seu_data.yaml")
+    
+    yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
     def video_frame_callback(frame):
         img = frame.to_ndarray(format="bgr24")
