@@ -22,3 +22,7 @@ pip-upgrade
 pydub==0.25.1
 twilio~=8.10.1
 matplotlib
+
+pip install streamlit -upgrade
+pip install streamlit-webrtc -upgrade
+
