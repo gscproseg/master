@@ -142,40 +142,30 @@ pass
 
 #################################
 with tab3:
-
-    
-    from PIL import Image
+        
+    import streamlit as st 
+    from streamlit_webrtc import webrtc_streamer
+    import av
     from yolo_predictions import YOLO_Pred
     
-    st.title('Detecção em Tempo Real com YOLOv5')
+    # load yolo model
+    yolo = YOLO_Pred('./models/best.onnx',
+                     './models/data.yaml')
     
-    # Inicialize o modelo YOLOv5
-    with st.spinner('Por favor, aguarde enquanto o modelo é carregado...'):
-        yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
-    # Função para processar o vídeo da webcam e realizar a detecção
-    def detect_realtime(camera_id):
-        cap = cv2.VideoCapture(camera_id)
+    def video_frame_callback(frame):
+        img = frame.to_ndarray(format="bgr24")
+        # any operation 
+        #flipped = img[::-1,:,:]
+        pred_img = yolo.predictions(img)
     
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                break
+        return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
     
-            detections = yolo.predictions(frame)
     
-            # Desenhar caixas delimitadoras nas detecções
-            for detection in detections:
-                x1, y1, x2, y2, label = detection
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-    
-            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            image_pil = Image.fromarray(frame_rgb)
-            st.image(image_pil, caption='Detecção em Tempo Real', use_column_width=True)
-    
-    camera_id = st.radio("Selecione a câmera:", options=[0, 1, 2, 3], index=0)
-    detect_realtime(camera_id)
+    webrtc_streamer(key="example", 
+                    video_frame_callback=video_frame_callback,
+                    media_stream_constraints={"video":True,"audio":False})
+
 
 
 
