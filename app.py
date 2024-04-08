@@ -170,31 +170,18 @@ with tab3:
             return None
     
     def main():
-        tabs = st.sidebar.radio('Selecione a opção de carregamento de imagem:', ('Local', 'URL'))
+        st.subheader('Carregar imagem via URL')
+        url = st.text_input('Digite o URL da imagem e pressione Enter:')
+        button_url = st.button('Carregar Imagem via URL')
     
-        if tabs == 'Local':
-            # Botão para carregar imagem localmente
-            st.subheader('Carregar imagem localmente')
-            image_file = st.file_uploader('Selecione uma imagem')
-            button_local = st.button('Carregar Imagem Localmente')
-            if button_local and image_file is not None:
-                image_obj = Image.open(image_file)
-                st.image(image_obj, caption='Imagem carregada localmente', use_column_width=True)
-                with st.spinner('Analisando a imagem...'):
-                    image_array = np.array(image_obj)
-                    pred_img = yolo.predictions(image_array)
-                    pred_img_obj = Image.fromarray(pred_img)
-                    st.subheader('Imagem com a possível detecção de Myxozoários')
-                    st.image(pred_img_obj, caption='Detecção de Myxozoários', use_column_width=True)
-        elif tabs == 'URL':
-            # Botão para carregar imagem via URL
-            st.subheader('Carregar imagem via URL')
-            url = st.text_input('Digite o URL da imagem:')
-            button_url = st.button('Carregar Imagem via URL')
-            if button_url:
-                image_url = load_image_from_url(url)
-                if image_url is not None:
-                    st.image(image_url, caption='Imagem carregada via URL', use_column_width=True)
+        if button_url and url:
+            image_url = load_image_from_url(url)
+            
+            if image_url is not None:
+                st.image(image_url, caption='Imagem carregada via URL', use_column_width=True)
+                button_detect = st.button('Detectar Myxozoários')
+                
+                if button_detect:
                     with st.spinner('Analisando a imagem...'):
                         image_array = np.array(image_url)
                         pred_img = yolo.predictions(image_array)
@@ -204,6 +191,7 @@ with tab3:
     
     if __name__ == "__main__":
         main()
+
 
 
 pass
