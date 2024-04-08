@@ -143,20 +143,19 @@ pass
 #################################
 with tab3:
 
-    import streamlit as st 
-    from streamlit_webrtc import (VideoTransformerBase, RTCConfiguration, webrtc_streamer
-    )
+    from streamlit_webrtc import (VideoTransformerBase, RTCConfiguration, webrtc_streamer)
     import av
     from yolo_predictions import YOLO_Pred
 
 
-    yolocam = YOLO_Pred('./best.onnx', './data.yaml')
+           yolo = YOLO_Pred(onnx_model='./best.onnx',
+                         data_yaml='./data.yaml')
+        st.balloons()
 
     
     # Definir configuração RTC (WebRTC)
     rtc_configuration = RTCConfiguration(
-        {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
-    )
+        {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
     
     class YOLOVideoTransformer(VideoTransformerBase):
         def transform(self, frame: av.VideoFrame) -> av.VideoFrame:
