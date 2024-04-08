@@ -170,11 +170,12 @@ with tab3:
             return None
     
     def main():
+        # Campo de texto para inserir o URL da imagem
         st.subheader('Carregar imagem via URL')
         url = st.text_input('Digite o URL da imagem e pressione Enter:')
-        button_url = st.button('Carregar Imagem via URL')
-    
-        if button_url and url:
+        
+        if url:
+            # Carregar a imagem a partir do URL
             image_url = load_image_from_url(url)
             
             if image_url is not None:
@@ -191,7 +192,6 @@ with tab3:
     
     if __name__ == "__main__":
         main()
-
 
 
 pass
