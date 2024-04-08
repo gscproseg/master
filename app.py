@@ -148,8 +148,8 @@ with tab3:
     from yolo_predictions import YOLO_Pred
     
     # load yolo model
-    yolo = YOLO_Pred('./models/best.onnx',
-                     './models/data.yaml')
+    yolo = YOLO_Pred('./best.onnx',
+                     './data.yaml')
     
     
     def video_frame_callback(frame):
