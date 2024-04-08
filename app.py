@@ -10,7 +10,7 @@ st.set_page_config(
 )
 
 # Criação das guias
-tab1, tab2, tab3, tab4 = st.tabs(["Home", "image","Url", "📸-Cameras"])
+tab1, tab2, tab3 = st.tabs(["Home", "🖼️- image", "📸-Cameras"])
 
 # Conteúdo da página "Home"
 with tab1:
