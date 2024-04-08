@@ -140,83 +140,76 @@ with tab2:
     pass
 
 
-
 #################################
 with tab3:
 
-    import streamlit as st 
-    from streamlit_webrtc import webrtc_streamer
-    import av
-
-
-# Conteúdo da página "📸- Cam"
-with tab3:
-
     import streamlit as st
-from yolo_predictions import YOLO_Pred
-from PIL import Image
-import numpy as np
-import requests
-from io import BytesIO
-
-st.title('Detecção de Myxozoários')
-
-# Carregar o modelo YOLO
-with st.spinner('Por favor, aguarde enquanto o modelo é carregado...'):
-    yolo = YOLO_Pred(onnx_model='./best.onnx',
-                     data_yaml='./data.yaml')
-
-def load_image_from_url(url):
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            image_url = Image.open(BytesIO(response.content))
-            return image_url
-        else:
+    from yolo_predictions import YOLO_Pred
+    from PIL import Image
+    import numpy as np
+    import requests
+    from io import BytesIO
+    
+    st.title('Detecção de Myxozoários')
+    
+    # Carregar o modelo YOLO
+    with st.spinner('Por favor, aguarde enquanto o modelo é carregado...'):
+        yolo = YOLO_Pred(onnx_model='./best.onnx',
+                         data_yaml='./data.yaml')
+    
+    def load_image_from_url(url):
+        try:
+            response = requests.get(url)
+            if response.status_code == 200:
+                image_url = Image.open(BytesIO(response.content))
+                return image_url
+            else:
+                return None
+        except Exception as e:
+            st.error('Erro ao carregar a imagem via URL. Certifique-se de que o URL é válido.')
             return None
-    except Exception as e:
-        st.error('Erro ao carregar a imagem via URL. Certifique-se de que o URL é válido.')
-        return None
-
-def main():
-    tabs = st.sidebar.radio('Selecione a opção de carregamento de imagem:', ('Local', 'URL'))
-
-    if tabs == 'Local':
-        # Botão para carregar imagem localmente
-        st.subheader('Carregar imagem localmente')
-        image_file = st.file_uploader('Selecione uma imagem')
-        button_local = st.button('Carregar Imagem Localmente')
-        if button_local and image_file is not None:
-            image_obj = Image.open(image_file)
-            st.image(image_obj, caption='Imagem carregada localmente', use_column_width=True)
-            with st.spinner('Analisando a imagem...'):
-                image_array = np.array(image_obj)
-                pred_img = yolo.predictions(image_array)
-                pred_img_obj = Image.fromarray(pred_img)
-                st.subheader('Imagem com a possível detecção de Myxozoários')
-                st.image(pred_img_obj, caption='Detecção de Myxozoários', use_column_width=True)
-    elif tabs == 'URL':
-        # Botão para carregar imagem via URL
-        st.subheader('Carregar imagem via URL')
-        url = st.text_input('Digite o URL da imagem:')
-        button_url = st.button('Carregar Imagem via URL')
-        if button_url:
-            image_url = load_image_from_url(url)
-            if image_url is not None:
-                st.image(image_url, caption='Imagem carregada via URL', use_column_width=True)
+    
+    def main():
+        tabs = st.sidebar.radio('Selecione a opção de carregamento de imagem:', ('Local', 'URL'))
+    
+        if tabs == 'Local':
+            # Botão para carregar imagem localmente
+            st.subheader('Carregar imagem localmente')
+            image_file = st.file_uploader('Selecione uma imagem')
+            button_local = st.button('Carregar Imagem Localmente')
+            if button_local and image_file is not None:
+                image_obj = Image.open(image_file)
+                st.image(image_obj, caption='Imagem carregada localmente', use_column_width=True)
                 with st.spinner('Analisando a imagem...'):
-                    image_array = np.array(image_url)
+                    image_array = np.array(image_obj)
                     pred_img = yolo.predictions(image_array)
                     pred_img_obj = Image.fromarray(pred_img)
                     st.subheader('Imagem com a possível detecção de Myxozoários')
                     st.image(pred_img_obj, caption='Detecção de Myxozoários', use_column_width=True)
+        elif tabs == 'URL':
+            # Botão para carregar imagem via URL
+            st.subheader('Carregar imagem via URL')
+            url = st.text_input('Digite o URL da imagem:')
+            button_url = st.button('Carregar Imagem via URL')
+            if button_url:
+                image_url = load_image_from_url(url)
+                if image_url is not None:
+                    st.image(image_url, caption='Imagem carregada via URL', use_column_width=True)
+                    with st.spinner('Analisando a imagem...'):
+                        image_array = np.array(image_url)
+                        pred_img = yolo.predictions(image_array)
+                        pred_img_obj = Image.fromarray(pred_img)
+                        st.subheader('Imagem com a possível detecção de Myxozoários')
+                        st.image(pred_img_obj, caption='Detecção de Myxozoários', use_column_width=True)
+    
+    if __name__ == "__main__":
+        main()
 
-if __name__ == "__main__":
-    main()
 
 
 with tab4:
 
+    import av
     from streamlit_webrtc import webrtc_streamer
     from yolo_predictions import YOLO_Pred  # Importe sua classe YOLO_Pred
     import cv2
