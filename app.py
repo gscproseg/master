@@ -164,7 +164,7 @@ with tab3:
             return av.VideoFrame.from_ndarray(pred_img_cam, format="bgr24")
     
     # Configurar e iniciar a transmissão WebRTC
-    webrtc_ctx = webrtc_streamer(
+    video_processor_factory(
         key="example",
         video_transformer_factory=YOLOVideoTransformer,
         rtc_configuration=rtc_configuration,
@@ -173,7 +173,7 @@ with tab3:
     )
     
     # Exibir a interface do Streamlit
-    if webrtc_ctx.video_transformer:
+    if video_processor_factory.video_transformer:
         st.write("Streaming de vídeo com detecção de objetos está ativo.")
     else:
         st.write("Aguardando a transmissão de vídeo começar...")
