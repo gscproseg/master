@@ -100,7 +100,7 @@ with tab2:
         # Botão para carregar imagem via URL
         st.subheader('Carregar imagem via URL')
         url = st.text_input('Digite o URL da imagem:')
-        button_url = st.button('Carregar Imagem')
+        button_url = st.button('Carregar Imagem via URL')
         if button_url:
             image_url = load_image_from_url(url)
             if image_url is not None:
@@ -115,7 +115,8 @@ with tab2:
         # Botão para carregar imagem localmente
         st.subheader('Carregar imagem localmente')
         image_file = st.file_uploader('Selecione uma imagem')
-        if image_file is not None:
+        button_local = st.button('Carregar Imagem Localmente')
+        if button_local and image_file is not None:
             image_obj = Image.open(image_file)
             st.image(image_obj, caption='Imagem carregada localmente', use_column_width=True)
             with st.spinner('Analisando a imagem...'):
@@ -127,6 +128,7 @@ with tab2:
     
     if __name__ == "__main__":
         main()
+
 
 
 #################################
