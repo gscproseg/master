@@ -149,6 +149,9 @@ with tab3:
     import av
     from yolo_predictions import YOLO_Pred
 
+
+    yolocam = YOLO_Pred('./best.onnx', './data.yaml')
+
     
     # Definir configuração RTC (WebRTC)
     rtc_configuration = RTCConfiguration(
@@ -158,7 +161,7 @@ with tab3:
     class YOLOVideoTransformer(VideoTransformerBase):
         def transform(self, frame: av.VideoFrame) -> av.VideoFrame:
             img = frame.to_ndarray(format="bgr24")
-            pred_img = yolo.predictions(img)
+            pred_img = yolocam.predictions(img)
             return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
     
     # Configurar e iniciar a transmissão WebRTC
