@@ -148,15 +148,11 @@ with tab3:
     from yolo_predictions import YOLO_Pred
     
     # Carregue o modelo YOLO
-    yolo = YOLO_Pred()
+    yolo = YOLO_Pred(onnx_model="seu_modelo.onnx", data_yaml="seu_data.yaml")
     
     def video_frame_callback(frame):
         img = frame.to_ndarray(format="bgr24")
-        # Qualquer operação que você deseja aplicar ao quadro
-        # Por exemplo, inverter horizontalmente:
-        flipped = img[:, ::-1, :]
-        # Em seguida, faça previsões com o modelo YOLO
-        pred_img = yolo.predictions(flipped)
+        pred_img = yolo.predictions(img)
         return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
     
     webrtc_streamer(
