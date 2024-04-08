@@ -143,12 +143,16 @@ pass
 #################################
 with tab3:
 
+    import logging
     from streamlit_webrtc import webrtc_streamer
     import av
     from yolo_predictions import YOLO_Pred
     
-    # Carregue o modelo YOLO
+    # Configuração do logger para controle de logs
+    st_webrtc_logger = logging.getLogger("streamlit_webrtc")
+    st_webrtc_logger.setLevel(logging.WARNING)
     
+    # Carregue o modelo YOLO
     yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
     def video_frame_callback(frame):
