@@ -147,7 +147,7 @@ with tab3:
     from PIL import Image
     import cv2
     from io import BytesIO
-    from yolov5.detect import detect
+    from yolo_predictions import YOLO_Pred
     
     st.title('Detecção em Tempo Real com YOLOv5')
     
