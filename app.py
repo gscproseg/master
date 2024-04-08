@@ -145,47 +145,38 @@ with tab3:
 
     import streamlit as st
     from PIL import Image
-    import cv2
-    from io import BytesIO
-    from yolo_predictions import YOLO_Pred  # Importe a classe YOLO_Pred
+    from yolo_predictions import YOLO_Pred
     
     st.title('Detecção em Tempo Real com YOLOv5')
     
     # Inicialize o modelo YOLOv5
-    yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
+    with st.spinner('Por favor, aguarde enquanto o modelo é carregado...'):
+        yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
     # Função para processar o vídeo da webcam e realizar a detecção
     def detect_realtime(camera_id):
-        # Iniciar a captura de vídeo da webcam
         cap = cv2.VideoCapture(camera_id)
     
-        # Loop de processamento em tempo real
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
     
-            # Realizar a detecção de objetos
-            results = yolo.predictions(frame)
+            detections = yolo.predictions(frame)
     
-            # Desenhar as caixas delimitadoras e etiquetas na imagem
-            for result in results:
-                x1, y1, x2, y2, label = result
+            # Desenhar caixas delimitadoras nas detecções
+            for detection in detections:
+                x1, y1, x2, y2, label = detection
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
     
-            # Converter a imagem para o formato adequado para exibição no Streamlit
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             image_pil = Image.fromarray(frame_rgb)
-    
-            # Exibir a imagem no Streamlit
             st.image(image_pil, caption='Detecção em Tempo Real', use_column_width=True)
     
-    # Adicionar um botão para selecionar a câmera
     camera_id = st.radio("Selecione a câmera:", options=[0, 1, 2, 3], index=0)
-    
-    # Executar a função para detecção em tempo real
     detect_realtime(camera_id)
+
 
 
 
