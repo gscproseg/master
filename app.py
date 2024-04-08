@@ -143,44 +143,44 @@ pass
 #################################
 with tab3:
 
-    import streamlit as st
-    import logging
-    from streamlit_webrtc import webrtc_streamer
+    import streamlit as st 
+    from streamlit_webrtc import (
+        VideoTransformerBase,
+        RTCConfiguration,
+        webrtc_streamer,
+    )
     import av
     from yolo_predictions import YOLO_Pred
     
-    # Configuração do logger para controle de logs
-    st_webrtc_logger = logging.getLogger("streamlit_webrtc")
-    st_webrtc_logger.setLevel(logging.WARNING)
-    
     # Carregue o modelo YOLO
-    yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
+    yolo = YOLO_Pred('./models/best.onnx', './models/data.yaml')
     
-    def video_frame_callback(frame):
-        img = frame.to_ndarray(format="bgr24")
-        pred_img = yolo.predictions(img)
-        return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
+    # Definir configuração RTC (WebRTC)
+    rtc_configuration = RTCConfiguration(
+        {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+    )
     
-    def main():
-        st.title('Detecção em Tempo Real com YOLOv5')
+    class YOLOVideoTransformer(VideoTransformerBase):
+        def transform(self, frame: av.VideoFrame) -> av.VideoFrame:
+            img = frame.to_ndarray(format="bgr24")
+            pred_img = yolo.predictions(img)
+            return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
     
-        # Inicialize o modelo YOLOv5
-        with st.spinner('Por favor, aguarde enquanto o modelo é carregado...'):
-            yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
+    # Configurar e iniciar a transmissão WebRTC
+    webrtc_ctx = webrtc_streamer(
+        key="example",
+        video_transformer_factory=YOLOVideoTransformer,
+        rtc_configuration=rtc_configuration,
+        async_transform=True,
+        media_stream_constraints={"video": True, "audio": False},
+    )
     
-        # Função para processar o vídeo da webcam e realizar a detecção
-        def detect_realtime(camera_id):
-            webrtc_streamer(
-                key="example",
-                video_frame_callback=video_frame_callback,
-                media_stream_constraints={"video": True, "audio": False}
-            )
-    
-        camera_id = st.radio("Selecione a câmera:", options=[0, 1, 2, 3], index=0)
-        detect_realtime(camera_id)
-    
-    if __name__ == "__main__":
-        main()
+    # Exibir a interface do Streamlit
+    if webrtc_ctx.video_transformer:
+        st.write("Streaming de vídeo com detecção de objetos está ativo.")
+    else:
+        st.write("Aguardando a transmissão de vídeo começar...")
+
 
 
 
