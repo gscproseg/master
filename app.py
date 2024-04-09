@@ -146,8 +146,7 @@ with tab3:
     import streamlit as st 
     from streamlit_webrtc import (
         VideoTransformerBase,
-        RTCConfiguration,
-        webrtc_streamer,
+        RTCConfiguration, webrtc_streamer,
     )
     import av
     from yolo_predictions import YOLO_Pred
@@ -170,7 +169,7 @@ with tab3:
     with st.spinner('Aguardando a transmissão de vídeo começar...'):
         webrtc_ctx = webrtc_streamer(
             key="example",
-            video_transformer_factory=YOLOVideoTransformer,
+            video_processor_factory=YOLOVideoTransformer,
             rtc_configuration=rtc_configuration,
             async_transform=True,
             media_stream_constraints={"video": True, "audio": False},
