@@ -149,8 +149,8 @@ with tab3:
         RTCConfiguration,
         webrtc_streamer,
     )
-import av
-from yolo_predictions import YOLO_Pred
+    import av
+    from yolo_predictions import YOLO_Pred
     
     yolocam = YOLO_Pred(onnx_model='./best.onnx',
                         data_yaml='./data.yaml')
