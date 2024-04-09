@@ -144,9 +144,9 @@ pass
 with tab3:
 
     import streamlit as st 
-    from streamlit_webrtc import (
+    from streamlit_webrtc import(
         VideoTransformerBase,
-        RTCConfiguration, webrtc_streamer,
+        RTCConfiguration, webrtc_streamer
     )
     import av
     from yolo_predictions import YOLO_Pred
