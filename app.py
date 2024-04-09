@@ -148,7 +148,7 @@ with tab3:
     from yolo_predictions import YOLO_Pred
     
     yolocam = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
-    #st.balloons()
+    st.balloons()
     
     # Definir configuração RTC (WebRTC)
     rtc_configuration = RTCConfiguration(
@@ -175,16 +175,3 @@ with tab3:
         st.write("Streaming de vídeo com detecção de objetos está ativo.")
     else:
         st.write("Aguardando a transmissão de vídeo começar...")
-
-
-
-
-
-
-
-
-
-
-
-
-    
