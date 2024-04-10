@@ -172,9 +172,10 @@ with tab3:
             key="example",
             video_processor_factory=YOLOVideoTransformer,
             rtc_configuration=rtc_configuration,
-            async_transform=True,
+            async_processing=True,  # Use async_processing em vez de async_transform
             media_stream_constraints={"video": True, "audio": False},
         )
+        
     
     # Exibir a interface do Streamlit
     if webrtc_ctx.video_transformer:
