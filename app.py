@@ -153,7 +153,7 @@ with tab3:
     from yolo_predictions import YOLO_Pred
     
     # Carregar o modelo YOLO
-    yolocam = YOLO_Pred(onnx_model='best.onnx', data_yaml='data.yaml')
+    #yolo = YOLO_Pred(onnx_model='best.onnx', data_yaml='data.yaml')
     
     # Definir configuração RTC (WebRTC)
     rtc_configuration = RTCConfiguration(
@@ -163,7 +163,7 @@ with tab3:
     class YOLOVideoTransformer(VideoTransformerBase):
         def transform(self, frame: av.VideoFrame) -> av.VideoFrame:
             img_cam = frame.to_ndarray(format="bgr24")
-            pred_img_video = yolocam.predictions(img_cam)
+            pred_img_video = yolo.predictions(img_cam)
     
             # Adicionar mensagem de log para verificar as previsões
             st.write(f"Previsões: {pred_img_video}")
