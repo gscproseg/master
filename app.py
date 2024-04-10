@@ -150,6 +150,7 @@ with tab3:
         webrtc_streamer
     )
     import av
+    import cv2
     from yolo_predictions import YOLO_Pred
     
     # Carregar o modelo YOLO
