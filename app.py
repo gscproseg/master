@@ -161,7 +161,7 @@ with tab3:
     )
     
     class YOLOVideoProcessor(VideoProcessorBase):
-        def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
+        async def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
             img_cam = frame.to_ndarray(format="bgr24")
             pred_img_video = yolocam.predictions(img_cam)
     
@@ -181,8 +181,9 @@ with tab3:
         )
     
     # Exibir a interface do Streamlit
-    if webrtc_ctx.video_processor:
+    if webrtc_ctx.state == "running":
         st.write("Streaming de vídeo com detecção de objetos está ativo.")
     else:
         st.write("Aguardando a transmissão de vídeo começar...")
+
 
