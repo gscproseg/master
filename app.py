@@ -167,12 +167,12 @@ with tab3:
     
     # Configurar e iniciar a transmissão WebRTC
     with st.spinner('Aguardando a transmissão de vídeo começar...'):
-    webrtc_ctx = webrtc_streamer(
-        key="example",
-        video_processor_factory=YOLOVideoTransformer,
-        rtc_configuration=rtc_configuration,
-        async_processing=True,  # Use async_processing em vez de async_transform
-        media_stream_constraints={"video": True, "audio": False},
+        webrtc_ctx = webrtc_streamer(
+            key="example",
+            video_processor_factory=YOLOVideoTransformer,
+            rtc_configuration=rtc_configuration,
+            async_processing=True,  # Use async_processing em vez de async_transform
+            media_stream_constraints={"video": True, "audio": False},
     )
         
     
