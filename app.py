@@ -144,16 +144,16 @@ pass
 with tab3:
 
     import streamlit as st 
-    from streamlit_webrtc import (VideoTransformerBase,
-    RTCConfiguration,
-    webrtc_streamer
+    from streamlit_webrtc import (
+        VideoTransformerBase,
+        RTCConfiguration,
+        webrtc_streamer
     )
-    
     import av
     from yolo_predictions import YOLO_Pred
     
     # Carregue o modelo YOLO
-    yolocam = YOLO_Pred(onnx_model = './best.onnx', data_yaml = './data.yaml')
+    yolocam = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
     # Definir configuração RTC (WebRTC)
     rtc_configuration = RTCConfiguration(
@@ -162,9 +162,9 @@ with tab3:
     
     class YOLOVideoTransformer(VideoTransformerBase):
         def transform(self, frame: av.VideoFrame) -> av.VideoFrame:
-            imgcam = frame.to_ndarray(format="bgr24")
-            predimgvideo = yolocam.predictions(imgcam)
-            return av.VideoFrame.from_ndarray(predimgvideo, format="bgr24")
+            img_cam = frame.to_ndarray(format="bgr24")
+            pred_img_video = yolocam.predictions(img_cam)
+            return av.VideoFrame.from_ndarray(pred_img_video, format="bgr24")
     
     # Configurar e iniciar a transmissão WebRTC
     with st.spinner('Aguardando a transmissão de vídeo começar...'):
@@ -181,4 +181,3 @@ with tab3:
         st.write("Streaming de vídeo com detecção de objetos está ativo.")
     else:
         st.write("Aguardando a transmissão de vídeo começar...")
-
