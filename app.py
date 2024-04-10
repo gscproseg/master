@@ -144,15 +144,16 @@ pass
 with tab3:
 
     import streamlit as st 
-    from streamlit_webrtc import(
+    from streamlit_webrtc import (
         VideoTransformerBase,
-        RTCConfiguration, webrtc_streamer
+        RTCConfiguration,
+        webrtc_streamer
     )
     import av
     from yolo_predictions import YOLO_Pred
     
     # Carregue o modelo YOLO
-    yolocam = YOLO_Pred(onnx_model = './best.onnx', data_yaml = './data.yaml')
+    yolocam = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
     # Definir configuração RTC (WebRTC)
     rtc_configuration = RTCConfiguration(
@@ -173,8 +174,7 @@ with tab3:
             rtc_configuration=rtc_configuration,
             async_processing=True,  # Use async_processing em vez de async_transform
             media_stream_constraints={"video": True, "audio": False},
-    )
-        
+        )
     
     # Exibir a interface do Streamlit
     if webrtc_ctx.video_transformer:
