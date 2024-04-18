@@ -171,20 +171,24 @@ with tab3:
                 return frame  # Retorna o frame original em caso de erro
     
     async def main():
-        # Configurar e iniciar a transmissão WebRTC de forma assíncrona
-        webrtc_ctx = await webrtc_streamer(
-            key="example",
-            video_processor_factory=YOLOVideoProcessor,
-            rtc_configuration=rtc_configuration,
-            media_stream_constraints={"video": True, "audio": False},
-        )
-        if webrtc_ctx.state == "running":
-            st.write("Streaming de vídeo com detecção de objetos está ativo.")
-        else:
-            st.write("Aguardando a transmissão de vídeo começar...")
+        try:
+            # Configurar e iniciar a transmissão WebRTC de forma assíncrona
+            webrtc_ctx = await webrtc_streamer(
+                key="example",
+                video_processor_factory=YOLOVideoProcessor,
+                rtc_configuration=rtc_configuration,
+                media_stream_constraints={"video": True, "audio": False},
+            )
+            if webrtc_ctx.state == "running":
+                st.write("Streaming de vídeo com detecção de objetos está ativo.")
+            else:
+                st.write("Aguardando a transmissão de vídeo começar...")
+        except Exception as e:
+            st.error(f"Erro ao iniciar a transmissão WebRTC: {e}")
     
     if __name__ == "__main__":
         asyncio.run(main())
+
 
 
 
