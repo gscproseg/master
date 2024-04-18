@@ -170,10 +170,10 @@ with tab3:
                 st.error(f"Erro ao processar frame: {e}")
                 return frame  # Retorna o frame original em caso de erro
     
-    async def main():
+    def main():
         try:
-            # Configurar e iniciar a transmissão WebRTC de forma assíncrona
-            webrtc_ctx = await webrtc_streamer(
+            # Configurar e iniciar a transmissão WebRTC
+            webrtc_ctx = webrtc_streamer(
                 key="example",
                 video_processor_factory=YOLOVideoProcessor,
                 rtc_configuration=rtc_configuration,
@@ -187,7 +187,8 @@ with tab3:
             st.error(f"Erro ao iniciar a transmissão WebRTC: {e}")
     
     if __name__ == "__main__":
-        asyncio.run(main())
+        main()
+
 
 
 
