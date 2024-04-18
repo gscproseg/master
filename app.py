@@ -143,7 +143,6 @@ pass
 #################################
 with tab3:
 
-    import streamlit as st
     from streamlit_webrtc import VideoProcessorBase, RTCConfiguration, webrtc_streamer
     import av
     from yolo_predictions import YOLO_Pred
@@ -178,7 +177,7 @@ with tab3:
         yolocam = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
         # Configurar e iniciar a transmissão WebRTC de forma assíncrona
-        webrtc_ctx = await webrtc_streamer(
+        webrtc_ctx = webrtc_streamer(
             key="example",
             video_processor_factory=YOLOVideoProcessor,
             rtc_configuration=rtc_configuration,
