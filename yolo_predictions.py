@@ -53,7 +53,7 @@ class YOLO_Pred():
         for i in range(len(detections)):
             row = detections[i]
             confidence = row[4] # confidence of detection an object
-            if confidence > 0.2:
+            if confidence > 0.35:
                 class_score = row[5:].max() # maximum probability from 20 objects
                 class_id = row[5:].argmax() # get the index position at which max probabilty occur
 
@@ -80,7 +80,7 @@ class YOLO_Pred():
         confidences_np = np.array(confidences).tolist()
 
         # NMS
-        index = np.array(cv2.dnn.NMSBoxes(boxes_np,confidences_np,0.25,0.80)).flatten()
+        index = np.array(cv2.dnn.NMSBoxes(boxes_np,confidences_np,0.25,0.90)).flatten()
 
 
         # Draw the Bounding
@@ -97,7 +97,8 @@ class YOLO_Pred():
             cv2.rectangle(image,(x,y),(x+w,y+h),colors,2)
             cv2.rectangle(image,(x,y-10),(x+w,y),colors,-1)
 
-            cv2.putText(image,text,(x,y-10),cv2.FONT_HERSHEY_TRIPLEX,0.4,(0,0,0),1)
+            cv2.putText(image,text,(x,y-10),cv2.FONT_IOTALIC,0.4,(0,0,0),1)
+            
             
             
         return image
