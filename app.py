@@ -142,14 +142,11 @@ pass
 
 #################################
 with tab3:
-    
+
     from streamlit_webrtc import VideoProcessorBase, RTCConfiguration, webrtc_streamer
     import av
     from yolo_predictions import YOLO_Pred
     import asyncio
-    
-    # Carregar o modelo YOLO
-    yolocam = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
     # Definir configuração RTC (WebRTC)
     rtc_configuration = RTCConfiguration(
@@ -170,7 +167,10 @@ with tab3:
                 st.error(f"Erro ao processar frame: {e}")
                 return frame  # Retorna o frame original em caso de erro
     
-    async def main():
+    async def start_webrtc_stream():
+        # Carregar o modelo YOLO dentro da função
+        yolocam = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
+    
         # Configurar e iniciar a transmissão WebRTC de forma assíncrona
         webrtc_ctx = await webrtc_streamer(
             key="example",
@@ -183,9 +183,12 @@ with tab3:
         else:
             st.write("Aguardando a transmissão de vídeo começar...")
     
+    def main():
+        asyncio.run(start_webrtc_stream())
+    
     if __name__ == "__main__":
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
+        main()
+
 
 
 
