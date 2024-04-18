@@ -177,7 +177,13 @@ with tab3:
             key="example",
             video_processor_factory=YOLOVideoProcessor,
             rtc_configuration=rtc_configuration,
-            media_stream_constraints={"video": True, "audio": False},
+            media_stream_constraints={
+                "video": {
+                    "width": 640,
+                    "height": 640
+                }, 
+                "audio": False
+            },
         )
         if webrtc_ctx.state == "running":
             print("Video streaming with object detection is active.")
@@ -189,3 +195,4 @@ with tab3:
     
     if __name__ == "__main__":
         main()
+
