@@ -148,35 +148,31 @@ with tab3:
     from yolo_predictions import YOLO_Pred
     import asyncio
     
-    # Definir yolocam como uma variável global
+    # Define yolocam as a global variable
     yolocam = None
     
-    # Definir configuração RTC (WebRTC)
+    # Define RTC (WebRTC) configuration
     rtc_configuration = RTCConfiguration(
         {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
     )
     
     class YOLOVideoProcessor(VideoProcessorBase):
         async def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
-            global yolocam  # Acessar a variável global yolocam
+            global yolocam  # Access the global variable yolocam
             try:
                 img_cam = frame.to_ndarray(format="bgr24")
                 pred_img_video = yolocam.predictions(img_cam)
-    
-                # Adicionar mensagem de log para verificar as previsões
-                st.write(f"Previsões: {pred_img_video}")
-    
                 return av.VideoFrame.from_ndarray(pred_img_video, format="bgr24")
             except Exception as e:
-                st.error(f"Erro ao processar frame: {e}")
-                return frame  # Retorna o frame original em caso de erro
+                print(f"Error processing frame: {e}")
+                return frame  # Return the original frame in case of error
     
     async def start_webrtc_stream():
-        global yolocam  # Acessar a variável global yolocam
-        # Carregar o modelo YOLO dentro da função
+        global yolocam  # Access the global variable yolocam
+        # Load the YOLO model inside the function
         yolocam = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
-        # Configurar e iniciar a transmissão WebRTC de forma assíncrona
+        # Configure and start the WebRTC stream asynchronously
         webrtc_ctx = webrtc_streamer(
             key="example",
             video_processor_factory=YOLOVideoProcessor,
@@ -184,9 +180,9 @@ with tab3:
             media_stream_constraints={"video": True, "audio": False},
         )
         if webrtc_ctx.state == "running":
-            st.write("Streaming de vídeo com detecção de objetos está ativo.")
+            print("Video streaming with object detection is active.")
         else:
-            st.write("Aguardando a transmissão de vídeo começar...")
+            print("Waiting for the video stream to start...")
     
     def main():
         asyncio.run(start_webrtc_stream())
