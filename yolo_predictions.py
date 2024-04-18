@@ -57,7 +57,7 @@ class YOLO_Pred():
                 class_score = row[5:].max() # maximum probability from 20 objects
                 class_id = row[5:].argmax() # get the index position at which max probabilty occur
 
-                if class_score > 0.25:
+                if class_score > 0.5:
                     cx, cy, w, h = row[0:4]
                     # construct bounding from four values
                     # left, top, width and height
@@ -80,7 +80,7 @@ class YOLO_Pred():
         confidences_np = np.array(confidences).tolist()
 
         # NMS
-        index = np.array(cv2.dnn.NMSBoxes(boxes_np,confidences_np,0.25,0.90)).flatten()
+        index = np.array(cv2.dnn.NMSBoxes(boxes_np,confidences_np,0.4,0.9)).flatten()
 
 
         # Draw the Bounding
