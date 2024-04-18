@@ -143,10 +143,14 @@ pass
 #################################
 with tab3:
 
+    import streamlit as st
     from streamlit_webrtc import VideoProcessorBase, RTCConfiguration, webrtc_streamer
     import av
     from yolo_predictions import YOLO_Pred
     import asyncio
+    
+    # Definir yolocam como uma variável global
+    yolocam = None
     
     # Definir configuração RTC (WebRTC)
     rtc_configuration = RTCConfiguration(
@@ -155,6 +159,7 @@ with tab3:
     
     class YOLOVideoProcessor(VideoProcessorBase):
         async def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
+            global yolocam  # Acessar a variável global yolocam
             try:
                 img_cam = frame.to_ndarray(format="bgr24")
                 pred_img_video = yolocam.predictions(img_cam)
@@ -168,6 +173,7 @@ with tab3:
                 return frame  # Retorna o frame original em caso de erro
     
     async def start_webrtc_stream():
+        global yolocam  # Acessar a variável global yolocam
         # Carregar o modelo YOLO dentro da função
         yolocam = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
@@ -188,11 +194,3 @@ with tab3:
     
     if __name__ == "__main__":
         main()
-
-
-
-
-
-
-
-
