@@ -143,7 +143,6 @@ pass
 #################################
 with tab3:
 
-    import streamlit as st
     from streamlit_webrtc import VideoProcessorBase, RTCConfiguration, webrtc_streamer
     import av
     from yolo_predictions import YOLO_Pred
@@ -185,8 +184,8 @@ with tab3:
             st.write("Aguardando a transmissão de vídeo começar...")
     
     if __name__ == "__main__":
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
+        asyncio.run(main())
+
 
 
 
