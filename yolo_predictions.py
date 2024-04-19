@@ -57,7 +57,7 @@ class YOLO_Pred():
                 class_score = row[5:].max() # maximum probability from 20 objects
                 class_id = row[5:].argmax() # get the index position at which max probabilty occur
 
-                if class_score > 0.5:
+                if class_score > 0.4:
                     cx, cy, w, h = row[0:4]
                     # construct bounding from four values
                     # left, top, width and height
