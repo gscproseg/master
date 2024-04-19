@@ -80,7 +80,7 @@ class YOLO_Pred():
         confidences_np = np.array(confidences).tolist()
 
         # NMS
-        index = np.array(cv2.dnn.NMSBoxes(boxes_np,confidences_np,0.4,0.9)).flatten()
+        index = np.array(cv2.dnn.NMSBoxes(boxes_np,confidences_np,0.25,0.45)).flatten()
 
 
         # Draw the Bounding
