@@ -53,7 +53,7 @@ class YOLO_Pred():
         for i in range(len(detections)):
             row = detections[i]
             confidence = row[4] # confidence of detection an object
-            if confidence > 0.35:
+            if confidence > 0.25:
                 class_score = row[5:].max() # maximum probability from 20 objects
                 class_id = row[5:].argmax() # get the index position at which max probabilty occur
 
