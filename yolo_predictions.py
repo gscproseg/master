@@ -80,7 +80,7 @@ class YOLO_Pred():
         confidences_np = np.array(confidences).tolist()
 
         # NMS
-        index = np.array(cv2.dnn.NMSBoxes(boxes_np,confidences_np,0.25,0.45)).flatten()
+        index = np.array(cv2.dnn.NMSBoxes(boxes_np,confidences_np,0.2,0.45)).flatten()
 
 
         # Draw the Bounding
@@ -97,7 +97,7 @@ class YOLO_Pred():
             cv2.rectangle(image,(x,y),(x+w,y+h),colors,2)
             cv2.rectangle(image,(x,y-10),(x+w,y),colors,-1)
 
-            cv2.putText(image,text,(x,y-10),cv2.FONT_ITALIC,0.2,(0,0,0),1)
+            cv2.putText(image,text,(x,y-10),cv2.FONT_ITALIC,0.4,(0,0,0),1)
             
             
             
