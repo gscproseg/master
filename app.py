@@ -195,7 +195,7 @@ with tab3:
             return image
     
     # Carregar modelo YOLO
-    yolo = YOLO_Pred('./best.onnx', './data.yaml')
+    #yolo = YOLO_Pred('./best.onnx', './data.yaml')
     
     # Callback para processar os frames de vídeo
     def video_frame_callback(frame):
