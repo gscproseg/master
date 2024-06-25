@@ -144,35 +144,29 @@ pass
 # Conteúdo da página "USB"
 with tab3:
     st.header("USB")
-
     from streamlit_webrtc import webrtc_streamer
     import av
-    from yolo_predictions import YOLO_Pred
-
-    # load yolo model
-    yolo = YOLO_Pred('./best.onnx',
-                    './data.yaml')
-
-
+    from yolo_predictions import YOLO_Pred  # Supondo que você tenha um arquivo com a classe YOLO_Pred
+    
+    # Load YOLO model
+    #yolo = YOLO_Pred('./best.onnx', './data.yaml')
+    
     def video_frame_callback(frame):
         img = frame.to_ndarray(format="bgr24")
-        # any operation 
-        #flipped = img[::-1,:,:]
-        pred_img = yolo.predictions(img)
-
+        pred_img = yolo.predictions(img)  # Supondo que predictions() é o método que aplica a detecção de objetos
         return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
-
-
-    webrtc_streamer(key="example", 
-                    video_frame_callback=video_frame_callback,
-                    media_stream_constraints={"video":True,"audio":False})
-
-
-with tab4:
-    st.subheader("| A Classe Myxozoa")
-      
     
-pass
+    def main():
+        st.header("USB")
+    
+        webrtc_streamer(key="example", 
+                        video_frame_callback=video_frame_callback,
+                        media_stream_constraints={"video": True, "audio": False})
+    
+    if __name__ == "__main__":
+        main()
+    
+    pass
 
 
 
