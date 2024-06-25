@@ -143,31 +143,75 @@ pass
 
 # Conteúdo da página "USB"
 with tab3:
-    st.header("USB")
+   
     from streamlit_webrtc import webrtc_streamer
     import av
-    from yolo_predictions import YOLO_Pred  # Supondo que você tenha um arquivo com a classe YOLO_Pred
+    import cv2
+    import numpy as np
     
-    # Load YOLO model
-    #yolo = YOLO_Pred('./best.onnx', './data.yaml')
+    # Classe YOLO_Pred que carrega o modelo YOLOv5 e faz as previsões
+    class YOLO_Pred:
+        def __init__(self, model_path, data_path):
+            self.net = cv2.dnn.readNet(model_path)
+            self.classes = self._load_classes(data_path)
     
+        def _load_classes(self, data_path):
+            with open(data_path, 'r') as f:
+                return f.read().strip().split("\n")
+    
+        def predictions(self, image):
+            blob = cv2.dnn.blobFromImage(image, scalefactor=1/255.0, size=(640, 640), swapRB=True, crop=False)
+            self.net.setInput(blob)
+            outputs = self.net.forward(self.net.getUnconnectedOutLayersNames())
+            return self._draw_predictions(image, outputs)
+    
+        def _draw_predictions(self, image, outputs):
+            height, width = image.shape[:2]
+            boxes, confidences, class_ids = [], [], []
+    
+            for output in outputs:
+                for detection in output:
+                    scores = detection[5:]
+                    class_id = np.argmax(scores)
+                    confidence = scores[class_id]
+                    if confidence > 0.5:
+                        box = detection[:4] * np.array([width, height, width, height])
+                        (centerX, centerY, w, h) = box.astype("int")
+                        x = int(centerX - (w / 2))
+                        y = int(centerY - (h / 2))
+                        boxes.append([x, y, int(w), int(h)])
+                        confidences.append(float(confidence))
+                        class_ids.append(class_id)
+    
+            indices = cv2.dnn.NMSBoxes(boxes, confidences, score_threshold=0.5, nms_threshold=0.4)
+            for i in indices:
+                i = i[0]
+                box = boxes[i]
+                (x, y, w, h) = box
+                cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                text = f"{self.classes[class_ids[i]]}: {confidences[i]:.2f}"
+                cv2.putText(image, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            
+            return image
+    
+    # Carregar modelo YOLO
+    yolo = YOLO_Pred('./best.onnx', './data.yaml')
+    
+    # Callback para processar os frames de vídeo
     def video_frame_callback(frame):
         img = frame.to_ndarray(format="bgr24")
-        pred_img = yolo.predictions(img)  # Supondo que predictions() é o método que aplica a detecção de objetos
+        pred_img = yolo.predictions(img)
         return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
     
+    # Função principal
     def main():
         st.header("USB")
-    
-        webrtc_streamer(key="example", 
-                        video_frame_callback=video_frame_callback,
-                        media_stream_constraints={"video": True, "audio": False})
+        webrtc_streamer(key="example", video_frame_callback=video_frame_callback, media_stream_constraints={"video": True, "audio": False})
     
     if __name__ == "__main__":
         main()
-    
-    pass
 
+    
 
 
 #####################################################################################
