@@ -213,7 +213,7 @@ import time
 # Função para detecção em vídeo
 def detect_video(video_source):
     # Carrega o modelo YOLO e outros recursos
-    yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
+    #yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
 
     # Inicia a captura de vídeo
     video_capture = cv2.VideoCapture(video_source)
