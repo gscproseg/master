@@ -207,8 +207,6 @@ pass
 # Importe os módulos necessários
 import cv2
 import streamlit as st
-from PIL import Image
-import numpy as np
 import time
 
 # Função para detecção em vídeo
@@ -219,6 +217,7 @@ def detect_video():
     # Inicia a captura de vídeo da webcam
     video_capture = cv2.VideoCapture(0)  # 0 indica a webcam padrão
 
+    start_time = time.time()  # Marca o tempo de início da detecção
 
     while True:
         ret, frame = video_capture.read()
@@ -243,6 +242,14 @@ def detect_video():
     # Libera a captura de vídeo
     video_capture.release()
 
-        # Botão para iniciar a detecção em vídeo da webcam
-    if st.button('Iniciar Detecção em Webcam'):
-        detect_video()
+# Conteúdo da Tab 4 - Detecção em Webcam
+st.header("Detecção em Webcam")
+
+# Conteúdo da Tab 4 - Detecção em Webcam
+with tab4:
+    st.header("Detecção em Webcam")
+
+# Botão para iniciar a detecção em vídeo da webcam
+if st.button('Iniciar Detecção em Webcam'):
+    detect_video()
+
