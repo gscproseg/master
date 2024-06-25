@@ -2,6 +2,7 @@ import streamlit as st
 import cv2
 import numpy as np
 import tempfile
+from yolo_predictions import YOLO_Pred
 
 class YOLO_Pred:
     def __init__(self, model_path, config_path, classes_path):
