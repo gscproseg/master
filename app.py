@@ -204,9 +204,9 @@ pass
 
 #########################################################################################
 
-# Importe os módulos necessários
-import cv2
 import streamlit as st
+import cv2
+import numpy as np
 import time
 
 # Função para detecção em vídeo
@@ -245,11 +245,8 @@ def detect_video():
 # Conteúdo da Tab 4 - Detecção em Webcam
 st.header("Detecção em Webcam")
 
-# Conteúdo da Tab 4 - Detecção em Webcam
-with tab4:
-    st.header("Detecção em Webcam")
-
 # Botão para iniciar a detecção em vídeo da webcam
 if st.button('Iniciar Detecção em Webcam'):
     detect_video()
+
 
