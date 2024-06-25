@@ -128,7 +128,7 @@ with tab2:
                         image_array = np.array(image_obj)
                         pred_img = yolo.predictions(image_array)
                         pred_img_obj = Image.fromarray(pred_img)
-                        prediction = True
+                        prediction = Truea
 
             if prediction:
                 st.subheader("Imagem com a possivel detecção")
@@ -142,38 +142,46 @@ pass
 
 
 # Conteúdo da página "USB"
+# Conteúdo da página "USB"
 with tab3:
-    st.header("USB")
+    st.header("Detecção em Vídeo")
 
-    from streamlit_webrtc import webrtc_streamer
-    import av
-    from yolo_predictions import YOLO_Pred
+    # Função para detecção em vídeo
+    def detect_video():
+        # Importações necessárias
+        import cv2
+        
+        # Carrega o modelo YOLO e outros recursos
+        yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
 
-    # load yolo model
-    yolo = YOLO_Pred('./best.onnx',
-                    './data.yaml')
+        # Inicia a captura de vídeo
+        video_capture = cv2.VideoCapture(0)  # O argumento 0 indica a câmera padrão, pode ser substituído por um caminho de arquivo de vídeo
 
+        while True:
+            ret, frame = video_capture.read()
 
-    def video_frame_callback(frame):
-        img = frame.to_ndarray(format="bgr24")
-        # any operation 
-        #flipped = img[::-1,:,:]
-        pred_img = yolo.predictions(img)
+            # Verifica se a captura de vídeo foi bem-sucedida
+            if not ret:
+                break
 
-        return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
+            # Converte o frame para o formato esperado pela função de detecção
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
+            # Realiza a detecção de objetos
+            pred_frame = yolo.predictions(frame_rgb)
 
-    webrtc_streamer(key="example", 
-                    video_frame_callback=video_frame_callback,
-                    media_stream_constraints={"video":True,"audio":False})
+            # Exibe o frame com as detecções
+            cv2.imshow('Detecção em Vídeo', cv2.cvtColor(pred_frame, cv2.COLOR_RGB2BGR))
 
+            # Pressione 'q' para sair do loop
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
-with tab4:
-    st.subheader("| A Classe Myxozoa")
-      
-    
-pass
+        # Libera a captura de vídeo e fecha a janela
+        video_capture.release()
+        cv2.destroyAllWindows()
 
+    # Botão para iniciar a detecção em vídeo
+    if st.button('Iniciar Detecção em Vídeo'):
+        detect_video()
 
-
-#####################################################################################
