@@ -1,13 +1,14 @@
-
-
 import streamlit as st
+from PIL import Image
+import numpy as np
+from yolo_predictions import YOLO_Pred
 
 # Configuração da página
 st.set_page_config(
     page_title= "MyxoNet",
-    page_icon= "🧠",  # Defina o ícone da página como um emoji de tubarão
-    layout="wide",  # Defina o layout como "wide" para aproveitar melhor o espaço na tela
-    initial_sidebar_state="collapsed"  # Defina a barra lateral como colapsada
+    page_icon= "🧠",  
+    layout="wide",  
+    initial_sidebar_state="collapsed"  
 )
 
 # Criação das guias
@@ -16,22 +17,17 @@ tab1, tab2, tab3, tab4 = st.tabs(["Home", "MixoNet", "USB", "Informações"])
 # Conteúdo da página "Home"
 with tab1:
     st.subheader("| A Classe Myxozoa")
-    # Use uma única coluna para posicionar a imagem e o texto na mesma linha
-    col1, col2 = st.columns([1,0.85])  # Defina a largura da primeira coluna
+    col1, col2 = st.columns([1,0.85]) 
 
     with col1:
-        # Adicione a imagem ao espaço em branco
         st.image("./images/sera.png", width=638)
-        # Adicione a legenda da imagem
         st.caption("""Courtesy W.L. Current
                    Myxobolus/Myxosoma sp.
                    """, unsafe_allow_html=True)  
-        # Adicione um espaçamento para criar espaço entre a imagem e o texto
-        st.text("")  # Ajuste o espaço conforme necessário
+        st.text("")  
 
     with col2:
-        # Ajuste a largura da coluna 2 (texto)
-        st.markdown(""*20)  # Isso cria um espaço em branco para ajustar a largura
+        st.markdown(""*20)  
         intro_text = """
         Os myxozoários são parasitas com ciclos de vida complexos, pertencentes ao filo Cnidaria, como águas-vivas e medusas.
         Com mais de 65 gêneros e 2.200 espécies, a maioria parasita peixes, causando doenças graves e alta mortalidade.
@@ -44,8 +40,6 @@ with tab1:
         envolvendo vários setores para enfrentar ameaças à saúde, ecossistemas, segurança alimentar e mudanças climáticas,
         contribuindo para o desenvolvimento sustentável.
         """
-        #st.markdown(intro_text)
-        
         st.write(f'<p style="color:#9c9d9f">{intro_text}</p>', unsafe_allow_html=True)
         audio_file = open("images/p_9841290_826.mp3", "rb")
         audio_bytes = audio_file.read()
@@ -71,16 +65,7 @@ with tab2:
 
     st.header("MyxoNet")
     
-    from yolo_predictions import YOLO_Pred
-    from PIL import Image
-    import numpy as np
-
     st.write('Por favor, carregue a imagem para obter a identificação')
-
-    with st.spinner('Por favor, aguarde enquanto analisamos a sua imagem'):
-        yolo = YOLO_Pred(onnx_model='./best.onnx',
-                        data_yaml='./data.yaml')
-        #st.balloons()
 
     def upload_image():
         # Upload Image
@@ -90,13 +75,10 @@ with tab2:
             file_details = {"filename": image_file.name,
                             "filetype": image_file.type,
                             "filesize": "{:,.2f} MB".format(size_mb)}
-            #st.json(file_details)
-            # validate file
             if file_details['filetype'] in ('image/png', 'image/jpeg'):
                 st.success('Tipo de arquivo imagem VALIDO (png ou jpeg)')
                 return {"file": image_file,
                         "details": file_details}
-
             else:
                 st.error('Tipo de arquivo de imagem INVALIDO')
                 st.error('Envie apenas arquivos nos formatos png, jpg e jpeg')
@@ -108,12 +90,15 @@ with tab2:
         if object:
             prediction = False
             image_obj = Image.open(object['file'])
-
-            col1, col2 = st.columns(2)#
+            
+            # Convertendo a imagem para o formato RGB
+            image_obj = image_obj.convert('RGB')
+            
+            col1, col2 = st.columns(2)
 
             with col1:
                 st.info('Pré-visualização da imagem')
-                st.image(image_obj)#
+                st.image(image_obj)
 
             with col2:
                 st.subheader('Confira abaixo os detalhes do arquivo')
@@ -123,8 +108,6 @@ with tab2:
                     with st.spinner("""
                     Obtendo Objets de imagem. Aguarde
                     """):
-                        # below command will convert
-                        # obj to array
                         image_array = np.array(image_obj)
                         pred_img = yolo.predictions(image_array)
                         pred_img_obj = Image.fromarray(pred_img)
@@ -173,7 +156,3 @@ with tab4:
       
     
 pass
-
-
-
-#####################################################################################
