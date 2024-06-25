@@ -242,12 +242,3 @@ def detect_video(video_source):
 
     # Libera a captura de vídeo
     video_capture.release()
-
-# Conteúdo da página "Webcam"
-with tab4:
-    st.header("Detecção em Webcam")
-
-    # Botão para iniciar a detecção em vídeo da webcam
-    if st.button('Iniciar Detecção em Webcam'):
-        detect_video(0)  # 0 indica a webcam padrão
-
