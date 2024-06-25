@@ -119,4 +119,7 @@ def main():
             st.image(pred_img_obj)
 
 if __name__ == "__main__":
-    yolo = YOLO_Pred(onnx_model='./best.onnx', './data.yaml')
+
+        # load yolo model
+    yolo = YOLO_Pred('./best.onnx',
+                    './data.yaml')
