@@ -142,7 +142,10 @@ pass
 
 
 
-# Conteúdo da página "USB"
+# Conteúdo da página "Video"
+
+import time  # Importe o módulo time
+
 with tab3:
     st.header("Detecção em Vídeo")
 
@@ -163,6 +166,8 @@ with tab3:
 
         # Inicia a captura de vídeo
         video_capture = cv2.VideoCapture(str(temp_video_path))
+
+        start_time = time.time()  # Marca o tempo de início da detecção
 
         while True:
             ret, frame = video_capture.read()
@@ -194,6 +199,5 @@ with tab3:
     # Botão para iniciar a detecção em vídeo
     if uploaded_file is not None:
         if st.button('Iniciar Detecção em Vídeo'):
-            start_time = time.time()  # Marca o tempo de início da detecção
             detect_video(uploaded_file)
 
