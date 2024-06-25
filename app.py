@@ -257,14 +257,6 @@ def detect_video():
     # Libera a captura de vídeo
     video_capture.release()
 
-# Configuração da página e criação das guias
-st.set_page_config(
-    page_title="Detecção em Webcam",
-    page_icon="📷",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
-
 # Conteúdo da Tab - Detecção em Webcam
 st.header("Detecção em Webcam")
 
