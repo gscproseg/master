@@ -150,7 +150,6 @@ with tab3:
     from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
     import av
     
-    # Classe para fazer as previsões do YOLOv5
     class YOLO_Pred:
         def __init__(self, model_path, data_path):
             self.net = cv2.dnn.readNet(model_path)
@@ -197,20 +196,22 @@ with tab3:
                 cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 text = f"{self.classes[class_ids[i]]}: {confidences[i]:.2f}"
                 cv2.putText(image, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-            
+    
             return image
     
-    # Definindo o processador de vídeo para Streamlit WebRTC
     class VideoProcessor(VideoProcessorBase):
         def __init__(self):
             self.yolo = YOLO_Pred('./best.onnx', './data.yaml')
     
         def recv(self, frame):
             img = frame.to_ndarray(format="bgr24")
-            pred_img = self.yolo.predictions(img)
+            try:
+                pred_img = self.yolo.predictions(img)
+            except Exception as e:
+                st.error(f"Error processing frame: {e}")
+                st.rerun()  # Reinicie o script se ocorrer um erro
             return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
     
-    # Função principal do Streamlit
     def main():
         st.title("YOLOv5 Real-Time Object Detection with Webcam")
     
@@ -222,6 +223,7 @@ with tab3:
     
     if __name__ == "__main__":
         main()
+
 
 
     
