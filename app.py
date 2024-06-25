@@ -1,7 +1,7 @@
 import streamlit as st
 from PIL import Image
 import numpy as np
-from yolo_predictions import YOLO_Pred  # Importe sua classe YOLO_Pred corretamente
+from yolov5_predictions import YOLO_Pred  # Importe sua classe YOLO_Pred corretamente
 
 # Configuração da página
 st.set_page_config(
