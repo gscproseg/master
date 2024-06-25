@@ -143,13 +143,13 @@ pass
 
 # Conteúdo da página "USB"
 with tab3:
-   
-    from streamlit_webrtc import webrtc_streamer
-    import av
+
     import cv2
     import numpy as np
+    from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
+    import av
     
-    # Classe YOLO_Pred que carrega o modelo YOLOv5 e faz as previsões
+    # Classe para fazer as previsões do YOLOv5
     class YOLO_Pred:
         def __init__(self, model_path, data_path):
             self.net = cv2.dnn.readNet(model_path)
@@ -194,19 +194,27 @@ with tab3:
             
             return image
     
-    # Carregar modelo YOLO
-    #yolo = YOLO_Pred('./best.onnx', './data.yaml')
+    # Definindo o processador de vídeo para Streamlit WebRTC
+    class VideoProcessor(VideoProcessorBase):
+        def __init__(self):
+            self.yolo = YOLO_Pred('./best.onnx', './data.yaml')
     
-    # Callback para processar os frames de vídeo
-    def video_frame_callback(frame):
-        img = frame.to_ndarray(format="bgr24")
-        pred_img = yolo.predictions(img)
-        return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
+        def recv(self, frame):
+            img = frame.to_ndarray(format="bgr24")
+            pred_img = self.yolo.predictions(img)
+            return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
     
-    # Função principal
+    # Função principal do Streamlit
     def main():
-        st.header("USB")
-        webrtc_streamer(key="example", video_frame_callback=video_frame_callback, media_stream_constraints={"video": True, "audio": False})
+        st.title("YOLOv5 Real-Time Object Detection with Webcam")
+    
+        webrtc_ctx = webrtc_streamer(
+            key="example",
+            mode=WebRtcMode.SENDRECV,
+            video_processor_factory=VideoProcessor,
+            media_stream_constraints={"video": True, "audio": False},
+            async_processing=True,
+        )
     
     if __name__ == "__main__":
         main()
