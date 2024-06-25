@@ -78,5 +78,5 @@ def main():
             st.video(output_video_path)
 
 if __name__ == "__main__":
-    yolo = YOLO_Pred('./best.onnx', './best.yaml', './classes.txt')
+    yolo = YOLO_Pred('./best.onnx', './best.yaml')
     main()
