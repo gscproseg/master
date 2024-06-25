@@ -243,10 +243,10 @@ def detect_video():
     video_capture.release()
 
 # Conteúdo da Tab 4 - Detecção em Webcam
-st.header("Detecção em Webcam")
+with tab4:
+    st.header("Detecção em Webcam")
 
-# Botão para iniciar a detecção em vídeo da webcam
-if st.button('Iniciar Detecção em Webcam'):
-    detect_video()
-
+    # Botão para iniciar a detecção em vídeo da webcam
+    if st.button('Iniciar Detecção em Webcam'):
+        detect_video()
 
