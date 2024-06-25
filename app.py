@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # Criação das guias
-tab1, tab2, tab3, tab4 = st.tabs(["Home", "MixoNet", "USB", "Informações"])
+tab1, tab2, tab3, tab4 = st.tabs(["Home", "MixoNet", "VIDEO", "USB"])
 
 # Conteúdo da página "Home"
 with tab1:
@@ -198,3 +198,56 @@ with tab3:
     if uploaded_file is not None:
         if st.button('Iniciar Detecção em Vídeo'):
             detect_video(uploaded_file)
+
+pass
+
+
+#########################################################################################
+
+# Importe os módulos necessários
+import cv2
+import tempfile
+from pathlib import Path
+import time
+
+# Função para detecção em vídeo
+def detect_video(video_source):
+    # Carrega o modelo YOLO e outros recursos
+    yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
+
+    # Inicia a captura de vídeo
+    video_capture = cv2.VideoCapture(video_source)
+
+    start_time = time.time()  # Marca o tempo de início da detecção
+
+    while True:
+        ret, frame = video_capture.read()
+
+        # Verifica se a captura de vídeo foi bem-sucedida
+        if not ret:
+            break
+
+        # Converte o frame para o formato esperado pela função de detecção
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        # Realiza a detecção de objetos
+        pred_frame = yolo.predictions(frame_rgb)
+
+        # Exibe o frame com as detecções no Streamlit
+        st.image(pred_frame, channels='RGB', use_column_width=True)
+
+        # Limita o tempo de execução do loop (por exemplo, 30 segundos)
+        if time.time() - start_time > 30:
+            break
+
+    # Libera a captura de vídeo
+    video_capture.release()
+
+# Conteúdo da página "Webcam"
+with tab4:
+    st.header("Detecção em Webcam")
+
+    # Botão para iniciar a detecção em vídeo da webcam
+    if st.button('Iniciar Detecção em Webcam'):
+        detect_video(0)  # 0 indica a webcam padrão
+
