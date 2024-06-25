@@ -128,7 +128,7 @@ with tab2:
                         image_array = np.array(image_obj)
                         pred_img = yolo.predictions(image_array)
                         pred_img_obj = Image.fromarray(pred_img)
-                        prediction = Truea
+                        prediction = True
 
             if prediction:
                 st.subheader("Imagem com a possivel detecção")
