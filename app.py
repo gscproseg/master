@@ -206,19 +206,18 @@ pass
 
 # Importe os módulos necessários
 import cv2
-import tempfile
-from pathlib import Path
+import streamlit as st
+from PIL import Image
+import numpy as np
 import time
 
 # Função para detecção em vídeo
-def detect_video(video_source):
+def detect_video():
     # Carrega o modelo YOLO e outros recursos
-    #yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
+    yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
 
-    # Inicia a captura de vídeo
-    video_capture = cv2.VideoCapture(video_source)
-
-    start_time = time.time()  # Marca o tempo de início da detecção
+    # Inicia a captura de vídeo da webcam
+    video_capture = cv2.VideoCapture(0)  # 0 indica a webcam padrão
 
     while True:
         ret, frame = video_capture.read()
