@@ -142,6 +142,7 @@ pass
 
 
 
+# Conteúdo da página "USB"
 with tab3:
     st.header("Detecção em Vídeo")
 
@@ -179,8 +180,8 @@ with tab3:
             # Exibe o frame com as detecções no Streamlit
             st.image(pred_frame, channels='RGB', use_column_width=True)
 
-            # Pressione 'q' para sair do loop
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            # Limita o tempo de execução do loop (por exemplo, 30 segundos)
+            if time.time() - start_time > 30:
                 break
 
         # Libera a captura de vídeo e fecha a janela
@@ -193,5 +194,6 @@ with tab3:
     # Botão para iniciar a detecção em vídeo
     if uploaded_file is not None:
         if st.button('Iniciar Detecção em Vídeo'):
+            start_time = time.time()  # Marca o tempo de início da detecção
             detect_video(uploaded_file)
 
