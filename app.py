@@ -143,19 +143,27 @@ pass
 
 # Conteúdo da página "USB"
 # Conteúdo da página "USB"
+# Conteúdo da página "USB"
 with tab3:
     st.header("Detecção em Vídeo")
 
     # Função para detecção em vídeo
-    def detect_video():
+    def detect_video(upload_file):
         # Importações necessárias
         import cv2
-        
+        import tempfile
+        from pathlib import Path
+
         # Carrega o modelo YOLO e outros recursos
         yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
 
+        # Salva o vídeo temporariamente
+        temp_video_path = Path(tempfile.NamedTemporaryFile().name)
+        with open(temp_video_path, 'wb') as temp_file:
+            temp_file.write(upload_file.read())
+
         # Inicia a captura de vídeo
-        video_capture = cv2.VideoCapture(0)  # O argumento 0 indica a câmera padrão, pode ser substituído por um caminho de arquivo de vídeo
+        video_capture = cv2.VideoCapture(str(temp_video_path))
 
         while True:
             ret, frame = video_capture.read()
@@ -181,7 +189,11 @@ with tab3:
         video_capture.release()
         cv2.destroyAllWindows()
 
+    # Upload de arquivo de vídeo
+    uploaded_file = st.file_uploader(label='Enviar Vídeo', type=['mp4', 'avi'])
+
     # Botão para iniciar a detecção em vídeo
-    if st.button('Iniciar Detecção em Vídeo'):
-        detect_video()
+    if uploaded_file is not None:
+        if st.button('Iniciar Detecção em Vídeo'):
+            detect_video(uploaded_file)
 
