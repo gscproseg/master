@@ -141,9 +141,7 @@ with tab2:
 pass
 
 
-# Conteúdo da página "USB"
-# Conteúdo da página "USB"
-# Conteúdo da página "USB"
+
 with tab3:
     st.header("Detecção em Vídeo")
 
@@ -178,8 +176,8 @@ with tab3:
             # Realiza a detecção de objetos
             pred_frame = yolo.predictions(frame_rgb)
 
-            # Exibe o frame com as detecções
-            cv2.imshow('Detecção em Vídeo', cv2.cvtColor(pred_frame, cv2.COLOR_RGB2BGR))
+            # Exibe o frame com as detecções no Streamlit
+            st.image(pred_frame, channels='RGB', use_column_width=True)
 
             # Pressione 'q' para sair do loop
             if cv2.waitKey(1) & 0xFF == ord('q'):
