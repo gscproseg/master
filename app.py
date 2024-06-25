@@ -204,16 +204,26 @@ pass
 
 #########################################################################################
 
-import streamlit as st
 import cv2
 import numpy as np
+import torch
+from torchvision import transforms
+from PIL import Image
 import time
+
+# Carregue o modelo PyTorch
+model = torch.load('./best.pt', map_location=torch.device('cpu'))  # Modifique o caminho conforme necessário
+model.eval()
+
+# Transformações para pré-processamento das imagens
+transform = transforms.Compose([
+    transforms.Resize((256, 256)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+])
 
 # Função para detecção em vídeo
 def detect_video():
-    # Carrega o modelo YOLO e outros recursos
-    yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
-
     # Inicia a captura de vídeo da webcam
     video_capture = cv2.VideoCapture(0)  # 0 indica a webcam padrão
 
@@ -226,14 +236,19 @@ def detect_video():
         if not ret:
             break
 
-        # Converte o frame para o formato esperado pela função de detecção
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # Converte o frame para o formato esperado pelo modelo PyTorch
+        frame_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+        input_tensor = transform(frame_pil).unsqueeze(0)
 
-        # Realiza a detecção de objetos
-        pred_frame = yolo.predictions(frame_rgb)
+        # Realiza a inferência com o modelo PyTorch
+        with torch.no_grad():
+            output = model(input_tensor)
 
-        # Exibe o frame com as detecções no Streamlit
-        st.image(pred_frame, channels='RGB', use_column_width=True)
+        # Processa as saídas do modelo (por exemplo, exibir resultados na imagem)
+        # Aqui você pode adicionar lógica para processar as saídas do modelo e exibir na imagem
+
+        # Exibe o frame com as saídas no Streamlit
+        st.image(frame, channels='BGR', use_column_width=True)
 
         # Limita o tempo de execução do loop (por exemplo, 30 segundos)
         if time.time() - start_time > 30:
@@ -242,11 +257,18 @@ def detect_video():
     # Libera a captura de vídeo
     video_capture.release()
 
-# Conteúdo da Tab 4 - Detecção em Webcam
-with tab4:
-    st.header("Detecção em Webcam")
+# Configuração da página e criação das guias
+st.set_page_config(
+    page_title="Detecção em Webcam",
+    page_icon="📷",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
-    # Botão para iniciar a detecção em vídeo da webcam
-    if st.button('Iniciar Detecção em Webcam'):
-        detect_video()
+# Conteúdo da Tab - Detecção em Webcam
+st.header("Detecção em Webcam")
+
+# Botão para iniciar a detecção em vídeo da webcam
+if st.button('Iniciar Detecção em Webcam'):
+    detect_video()
 
