@@ -143,7 +143,6 @@ pass
 
 
 # Conteúdo da página "Video"
-
 import time  # Importe o módulo time
 
 with tab3:
@@ -189,9 +188,8 @@ with tab3:
             if time.time() - start_time > 30:
                 break
 
-        # Libera a captura de vídeo e fecha a janela
+        # Libera a captura de vídeo
         video_capture.release()
-        cv2.destroyAllWindows()
 
     # Upload de arquivo de vídeo
     uploaded_file = st.file_uploader(label='Enviar Vídeo', type=['mp4', 'avi'])
@@ -200,4 +198,3 @@ with tab3:
     if uploaded_file is not None:
         if st.button('Iniciar Detecção em Vídeo'):
             detect_video(uploaded_file)
-
