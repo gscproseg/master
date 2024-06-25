@@ -5,7 +5,6 @@ import numpy as np
 import os
 import yaml
 from yaml.loader import SafeLoader
-import streamlit_webrtc
 
 
 class YOLO_Pred():
@@ -53,16 +52,14 @@ class YOLO_Pred():
         for i in range(len(detections)):
             row = detections[i]
             confidence = row[4] # confidence of detection an object
-            if confidence > 0.25:
+            if confidence > 0.4:
                 class_score = row[5:].max() # maximum probability from 20 objects
                 class_id = row[5:].argmax() # get the index position at which max probabilty occur
 
-                if class_score > 0.4:
+                if class_score > 0.25:
                     cx, cy, w, h = row[0:4]
                     # construct bounding from four values
                     # left, top, width and height
-                    #left = int((cx - 0.5*w)*x_factor)
-                    #top = int((cy - 0.5*h)*y_factor)
                     left = int((cx - 0.5*w)*x_factor)
                     top = int((cy - 0.5*h)*y_factor)
                     width = int(w*x_factor)
@@ -80,7 +77,10 @@ class YOLO_Pred():
         confidences_np = np.array(confidences).tolist()
 
         # NMS
-        index = np.array(cv2.dnn.NMSBoxes(boxes_np,confidences_np,0.20,0.45)).flatten()
+        #index = np.array(cv2.dnn.NMSBoxes(boxes_np,confidences_np,0.25,0.45)).flatten()
+
+         # NMS
+        index = np.array(cv2.dnn.NMSBoxes(boxes_np,confidences_np,0.3,0.5)).flatten()
 
 
         # Draw the Bounding
@@ -95,24 +95,16 @@ class YOLO_Pred():
             text = f'{class_name}: {bb_conf}%'
 
             cv2.rectangle(image,(x,y),(x+w,y+h),colors,2)
-            cv2.rectangle(image,(x,y-10),(x+w,y),colors,-1)
+            cv2.rectangle(image,(x,y-30),(x+w,y),colors,-1)
 
-            cv2.putText(image,text,(x,y-10),cv2.FONT_HERSHEY_SIMPLEX,0.4,(0,0,0),1)
-            
+            #cv2.putText(image,text,(x,y-10),cv2.FONT_HERSHEY_PLAIN,0.7,(0,0,0),1)
+            cv2.putText(image,text,(x,y-10),cv2.FONT_HERSHEY_PLAIN,0.8,(0,0,0),1)
+
             
             
         return image
-    
-    
+
     def generate_colors(self,ID):
         np.random.seed(10)
         colors = np.random.randint(100,255,size=(self.nc,3)).tolist()
         return tuple(colors[ID])
-        
-        
-    
-    
-    
-
-
-
