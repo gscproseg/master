@@ -119,4 +119,4 @@ def main():
             st.image(pred_img_obj)
 
 if __name__ == "__main__":
-    yolo = YOLO_Pred(onnx_model='./best.onnx', './data.yaml'
+    yolo = YOLO_Pred(onnx_model='./best.onnx', './data.yaml')
