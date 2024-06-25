@@ -84,7 +84,7 @@ def main():
     # Tab for image detection
     with tab1:
         st.header("Image")
-        uploaded_image = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+        uploaded_image = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"], key="image_uploader")
         if uploaded_image:
             image = Image.open(uploaded_image)
             image_array = np.array(image)
@@ -94,14 +94,14 @@ def main():
     # Tab for video detection
     with tab2:
         st.header("Video")
-        uploaded_video = st.file_uploader("Upload a video", type=["mp4", "avi", "mov"])
+        uploaded_video = st.file_uploader("Upload a video", type=["mp4", "avi", "mov"], key="video_uploader")
         if uploaded_video:
             with tempfile.NamedTemporaryFile(delete=False) as temp_video:
                 temp_video.write(uploaded_video.read())
                 temp_video_path = temp_video.name
 
             st.video(uploaded_video)
-            if st.button('Process Video'):
+            if st.button('Process Video', key="process_video_btn"):
                 output_video_path = process_video(temp_video_path, yolo)
                 st.success("Video processed successfully!")
                 st.video(output_video_path)
@@ -110,14 +110,14 @@ def main():
     with tab3:
         st.header("USB")
         st.subheader("Video from USB or Webcam")
-        uploaded_video = st.file_uploader("Upload a video", type=["mp4", "avi", "mov"])
+        uploaded_video = st.file_uploader("Upload a video", type=["mp4", "avi", "mov"], key="usb_video_uploader")
         if uploaded_video:
             with tempfile.NamedTemporaryFile(delete=False) as temp_video:
                 temp_video.write(uploaded_video.read())
                 temp_video_path = temp_video.name
 
             st.video(uploaded_video)
-            if st.button('Process Video from USB'):
+            if st.button('Process Video from USB', key="process_usb_video_btn"):
                 output_video_path = process_video(temp_video_path, yolo)
                 st.success("Video processed successfully!")
                 st.video(output_video_path)
@@ -125,6 +125,6 @@ def main():
     # Tab for additional info
     with tab4:
         st.subheader("| A Classe Myxozoa")
-      
+
 if __name__ == "__main__":
     main()
