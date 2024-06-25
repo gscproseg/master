@@ -144,9 +144,10 @@ pass
 # Conteúdo da página "USB"
 with tab3:
 
+    import streamlit as st
     import cv2
     import numpy as np
-    from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
+    from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
     import av
     
     # Classe para fazer as previsões do YOLOv5
@@ -160,6 +161,11 @@ with tab3:
                 return f.read().strip().split("\n")
     
         def predictions(self, image):
+            if image.shape[2] == 4:  # RGBA
+                image = cv2.cvtColor(image, cv2.COLOR_RGBA2RGB)
+            elif image.shape[2] == 1:  # Grayscale
+                image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+    
             blob = cv2.dnn.blobFromImage(image, scalefactor=1/255.0, size=(640, 640), swapRB=True, crop=False)
             self.net.setInput(blob)
             outputs = self.net.forward(self.net.getUnconnectedOutLayersNames())
@@ -208,16 +214,15 @@ with tab3:
     def main():
         st.title("YOLOv5 Real-Time Object Detection with Webcam")
     
-        webrtc_ctx = webrtc_streamer(
+        webrtc_streamer(
             key="example",
-            mode=WebRtcMode.SENDRECV,
             video_processor_factory=VideoProcessor,
             media_stream_constraints={"video": True, "audio": False},
-            async_processing=True,
         )
     
     if __name__ == "__main__":
         main()
+
 
     
 
