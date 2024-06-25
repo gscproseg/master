@@ -219,9 +219,6 @@ def detect_video():
     # Inicia a captura de vídeo da webcam
     video_capture = cv2.VideoCapture(0)  # 0 indica a webcam padrão
 
-        # Botão para iniciar a detecção em vídeo da webcam
-    if st.button('Iniciar Detecção em Webcam'):
-        detect_video()
 
     while True:
         ret, frame = video_capture.read()
@@ -245,3 +242,7 @@ def detect_video():
 
     # Libera a captura de vídeo
     video_capture.release()
+
+        # Botão para iniciar a detecção em vídeo da webcam
+    if st.button('Iniciar Detecção em Webcam'):
+        detect_video()
