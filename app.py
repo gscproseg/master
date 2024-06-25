@@ -24,34 +24,36 @@ class YOLO_Pred:
         outputs = self.net.forward(self.net.getUnconnectedOutLayersNames())
         return self._draw_predictions(image, outputs)
 
-    def _draw_predictions(self, image, outputs):
-        height, width = image.shape[:2]
-        boxes, confidences, class_ids = [], [], []
+   def _draw_predictions(self, image, outputs):
+    height, width = image.shape[:2]
+    boxes, confidences, class_ids = [], [], []
 
-        for output in outputs:
-            for detection in output:
-                scores = detection[5:]
-                class_id = np.argmax(scores)
-                confidence = scores[class_id]
-                if confidence > 0.5:
-                    box = detection[:4] * np.array([width, height, width, height])
-                    (centerX, centerY, w, h) = box.astype("int")
-                    x = int(centerX - (w / 2))
-                    y = int(centerY - (h / 2))
-                    boxes.append([x, y, int(w), int(h)])
-                    confidences.append(float(confidence))
-                    class_ids.append(class_id)
+    for output in outputs:
+        for detection in output:
+            scores = detection[5:]
+            class_id = np.argmax(scores)
+            confidence = scores[class_id]
+            if confidence > 0.5:
+                box = detection[:4] * np.array([width, height, width, height])
+                (centerX, centerY, w, h) = box.astype("int")
+                x = int(centerX - (w / 2))
+                y = int(centerY - (h / 2))
+                boxes.append([x, y, int(w), int(h)])
+                confidences.append(float(confidence))
+                class_ids.append(class_id)
 
-        indices = cv2.dnn.NMSBoxes(boxes, confidences, score_threshold=0.5, nms_threshold=0.4)
-        for i in indices:
-            i = i[0]
-            box = boxes[i]
-            (x, y, w, h) = box
-            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    indices = cv2.dnn.NMSBoxes(boxes, confidences, score_threshold=0.5, nms_threshold=0.4)
+    for i in indices:
+        i = i[0]
+        box = boxes[i]
+        (x, y, w, h) = box
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        if class_ids[i] < len(self.classes):  # Check if class_id is within bounds
             text = f"{self.classes[class_ids[i]]}: {confidences[i]:.2f}"
             cv2.putText(image, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-        return image
+    return image
+
 
 def process_video(video_path, yolo):
     cap = cv2.VideoCapture(video_path)
