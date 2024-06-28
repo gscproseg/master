@@ -209,14 +209,18 @@ with tab4:
     import av
     import cv2
     import numpy as np
-    import streamlit as st
     
     # Classe para carregar e utilizar o modelo de detecção
     class ObjectDetectionModel:
         def __init__(self, model_path, config_path):
             self.model_path = model_path
             self.config_path = config_path
-            self.model = cv2.dnn.readNetFromONNX(self.model_path)
+            try:
+                self.model = cv2.dnn.readNetFromONNX(self.model_path)
+                st.success("Modelo ONNX carregado com sucesso!")
+            except cv2.error as e:
+                st.error(f"Erro ao carregar o modelo ONNX: {e}")
+                raise e
     
         def detect_objects(self, frame):
             img = frame.to_ndarray(format="bgr24")
@@ -241,7 +245,11 @@ with tab4:
             return img
     
     # Inicialização do modelo de detecção de objetos
-    object_detector = ObjectDetectionModel(model_path='./model.onnx', config_path='./config.yaml')
+    try:
+        object_detector = ObjectDetectionModel(model_path='./model.onnx', config_path='./config.yaml')
+    except Exception as e:
+        st.error(f"Não foi possível inicializar o detector de objetos: {e}")
+        st.stop()
     
     # Função de callback para processar cada quadro de vídeo recebido
     def video_frame_callback(frame):
