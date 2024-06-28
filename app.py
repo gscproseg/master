@@ -211,9 +211,9 @@ import numpy as np
 
     # Classe para carregar e utilizar o modelo YOLOv5
     class YOLO_Pred:
-        def __init__(self, onnx_model):
-            self.onnx_model = onnx_model
-            self.yolo1 = cv2.dnn.readNetFromONNX(self.onnx_model)
+        def __init__(self, xonnx_model):
+            self.xonnx_model = xonnx_model
+            self.yolo1 = cv2.dnn.readNetFromONNX(self.xonnx_model)
     
         def detect_objects(self, frame):
             img = frame.to_ndarray(format="bgr24")
@@ -239,13 +239,13 @@ import numpy as np
             return img
     
     # Inicialização do modelo YOLOv5
-    yolo1 = YOLO_Pred(onnx_model='./best.onnx',
-                      data_yaml='./data.yaml')
+    yolo1 = YOLO_Pred(xonnx_model='./best.onnx',
+                      xdata_yaml='./data.yaml')
     
     # Função de callback para processar cada quadro de vídeo recebido
     def video_frame_callback(frame):
         # Realiza a detecção de objetos usando o modelo YOLOv5
-        processed_frame = yolo.detect_objects(frame)
+        processed_frame = yolo1.detect_objects(frame)
     
         # Retorna o quadro processado para exibição
         return av.VideoFrame.from_ndarray(processed_frame, format="bgr24")
