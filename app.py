@@ -204,76 +204,32 @@ pass
 
 #########################################################################################
 
-import onnxruntime as ort
-import numpy as np
+from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, WebRtcMode
+import av
 import cv2
-from PIL import Image, ImageDraw
+import numpy as np
 
-# Carregar o modelo ONNX
-ort_session = ort.InferenceSession("best.onnx")
+class VideoTransformer(VideoTransformerBase):
+    def transform(self, frame):
+        img = frame.to_ndarray(format="bgr24")
 
-# Função para pré-processar a imagem
-def preprocess(image):
-    # Redimensionar a imagem para 640x640
-    image = cv2.resize(image, (640, 640))
-    # Normalizar a imagem
-    image = image / 255.0
-    # Transpor a imagem para (3, 640, 640)
-    image = np.transpose(image, (2, 0, 1)).astype(np.float32)
-    # Adicionar uma dimensão para o batch
-    image = np.expand_dims(image, axis=0)
-    return image
+        # Realize qualquer processamento de imagem aqui
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
-# Função para detectar objetos em uma imagem
-def detect_objects(image):
-    # Pré-processar a imagem
-    input_image = preprocess(image)
-    # Fazer a inferência
-    outputs = ort_session.run(None, {"images": input_image})
-    return outputs
+        return av.VideoFrame.from_ndarray(img, format="bgr24")
 
-# Função para desenhar bounding boxes
-def draw_boxes(image, outputs):
-    boxes, scores, class_ids = outputs
-    draw = ImageDraw.Draw(image)
-    for box, score, class_id in zip(boxes[0], scores[0], class_ids[0]):
-        if score > 0.5:  # Filtrar detecções com baixa confiança
-            x1, y1, x2, y2 = box
-            draw.rectangle([x1, y1, x2, y2], outline="red", width=3)
-            draw.text((x1, y1), f"{class_id}: {score:.2f}", fill="red")
-    return image
+st.title("WebRTC Video Stream with YOLOv5")
 
-# Configurar a interface do Streamlit
-st.title("Detecção de Objetos em Tempo Real com YOLOv5 e Webcam")
+webrtc_ctx = webrtc_streamer(
+    key="example",
+    mode=WebRtcMode.SENDRECV,
+    video_transformer_factory=VideoTransformer,
+    async_transform=False
+)
 
-# Inicializar a captura de vídeo
-cap = cv2.VideoCapture(0)
+if webrtc_ctx.video_transformer:
+    st.write("WebRTC streamer is running...")
 
-# Verificar se a captura de vídeo foi inicializada com sucesso
-if not cap.isOpened():
-    st.error("Não foi possível acessar a webcam.")
-else:
-    stframe = st.empty()
-    while True:
-        # Capturar frame da webcam
-        ret, frame = cap.read()
-        if not ret:
-            st.error("Não foi possível capturar frame da webcam.")
-            break
-
-        # Converter o frame para RGB
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
-        # Detectar objetos no frame
-        outputs = detect_objects(frame_rgb)
-
-        # Desenhar bounding boxes no frame
-        frame_with_boxes = draw_boxes(Image.fromarray(frame_rgb), outputs)
-
-        # Exibir o frame com bounding boxes no Streamlit
-        stframe.image(frame_with_boxes, caption="Imagem com Detecção de Objetos", use_column_width=True)
-
-    # Liberar a captura de vídeo
-    cap.release()
 
 
