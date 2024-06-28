@@ -209,57 +209,57 @@ import av
 import cv2
 import numpy as np
 
-# Classe para carregar e utilizar o modelo YOLOv5
-class YOLO_Pred:
-    def __init__(self, onnx_model):
-        self.onnx_model = onnx_model
-        self.yolo = cv2.dnn.readNetFromONNX(self.onnx_model)
-
-    def detect_objects(self, frame):
-        img = frame.to_ndarray(format="bgr24")
-
-        # Preprocessamento da imagem, se necessário
-        # Exemplo: redimensionamento para o tamanho esperado pelo modelo YOLOv5
-        img_resized = cv2.resize(img, (640, 640))
-
-        # Detecção de objetos usando YOLOv5
-        blob = cv2.dnn.blobFromImage(img_resized, 1/255.0, (640, 640), swapRB=True, crop=False)
-        self.yolo.setInput(blob)
-        outputs = self.yolo.forward()
-
-        # Processa as saídas para exibir as detecções na imagem
-        for output in outputs:
-            for detection in output:
-                confidence = detection[4]
-                if confidence > 0.5:  # Confiança mínima para exibir a detecção
-                    x, y, w, h = detection[:4] * np.array([img.shape[1], img.shape[0], img.shape[1], img.shape[0]])
-                    x, y, w, h = int(x - w / 2), int(y - h / 2), int(w), int(h)
-                    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-        return img
-
-# Inicialização do modelo YOLOv5
-yolo = YOLO_Pred(onnx_model='./best.onnx')
-
-# Função de callback para processar cada quadro de vídeo recebido
-def video_frame_callback(frame):
-    # Realiza a detecção de objetos usando o modelo YOLOv5
-    processed_frame = yolo.detect_objects(frame)
-
-    # Retorna o quadro processado para exibição
-    return av.VideoFrame.from_ndarray(processed_frame, format="bgr24")
-
-# Configuração do WebRTC Streamer com streamlit-webrtc
-webrtc_ctx = webrtc_streamer(
-    key="example",
-    mode=WebRtcMode.SENDRECV,
-    video_frame_callback=video_frame_callback,
-    media_stream_constraints={"video": True, "audio": False}
-)
-
-# Exibe uma mensagem indicando que o streamer está ativo
-if webrtc_ctx.video_transformer:
-    st.write("WebRTC streamer is running...")
+    # Classe para carregar e utilizar o modelo YOLOv5
+    class YOLO_Pred:
+        def __init__(self, onnx_model):
+            self.onnx_model = onnx_model
+            self.yolo = cv2.dnn.readNetFromONNX(self.onnx_model)
+    
+        def detect_objects(self, frame):
+            img = frame.to_ndarray(format="bgr24")
+    
+            # Preprocessamento da imagem, se necessário
+            # Exemplo: redimensionamento para o tamanho esperado pelo modelo YOLOv5
+            img_resized = cv2.resize(img, (640, 640))
+    
+            # Detecção de objetos usando YOLOv5
+            blob = cv2.dnn.blobFromImage(img_resized, 1/255.0, (640, 640), swapRB=True, crop=False)
+            self.yolo.setInput(blob)
+            outputs = self.yolo.forward()
+    
+            # Processa as saídas para exibir as detecções na imagem
+            for output in outputs:
+                for detection in output:
+                    confidence = detection[4]
+                    if confidence > 0.5:  # Confiança mínima para exibir a detecção
+                        x, y, w, h = detection[:4] * np.array([img.shape[1], img.shape[0], img.shape[1], img.shape[0]])
+                        x, y, w, h = int(x - w / 2), int(y - h / 2), int(w), int(h)
+                        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    
+            return img
+    
+    # Inicialização do modelo YOLOv5
+    yolo = YOLO_Pred(onnx_model='./best.onnx')
+    
+    # Função de callback para processar cada quadro de vídeo recebido
+    def video_frame_callback(frame):
+        # Realiza a detecção de objetos usando o modelo YOLOv5
+        processed_frame = yolo.detect_objects(frame)
+    
+        # Retorna o quadro processado para exibição
+        return av.VideoFrame.from_ndarray(processed_frame, format="bgr24")
+    
+    # Configuração do WebRTC Streamer com streamlit-webrtc
+    webrtc_ctx = webrtc_streamer(
+        key="example",
+        mode=WebRtcMode.SENDRECV,
+        video_frame_callback=video_frame_callback,
+        media_stream_constraints={"video": True, "audio": False}
+    )
+    
+    # Exibe uma mensagem indicando que o streamer está ativo
+    if webrtc_ctx.video_transformer:
+        st.write("WebRTC streamer is running...")
 
 
 
