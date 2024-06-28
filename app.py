@@ -213,7 +213,7 @@ import numpy as np
     class YOLO_Pred:
         def __init__(self, onnx_model):
             self.onnx_model = onnx_model
-            self.yolo = cv2.dnn.readNetFromONNX(self.onnx_model)
+            self.yolo1 = cv2.dnn.readNetFromONNX(self.onnx_model)
     
         def detect_objects(self, frame):
             img = frame.to_ndarray(format="bgr24")
@@ -224,7 +224,7 @@ import numpy as np
     
             # Detecção de objetos usando YOLOv5
             blob = cv2.dnn.blobFromImage(img_resized, 1/255.0, (640, 640), swapRB=True, crop=False)
-            self.yolo.setInput(blob)
+            self.yolo1.setInput(blob)
             outputs = self.yolo.forward()
     
             # Processa as saídas para exibir as detecções na imagem
