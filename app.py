@@ -1,4 +1,4 @@
-
+ ioko
 
 import streamlit as st
 
@@ -209,6 +209,8 @@ with tab4:
     import av
     import cv2
     import numpy as np
+    import streamlit as st
+    import os
     
     # Classe para carregar e utilizar o modelo de detecção
     class ObjectDetectionModel:
@@ -244,9 +246,13 @@ with tab4:
     
             return img
     
+    # Obtenha o caminho absoluto do arquivo
+    model_path = os.path.abspath("./model.onnx")
+    config_path = os.path.abspath("./config.yaml")
+    
     # Inicialização do modelo de detecção de objetos
     try:
-        object_detector = ObjectDetectionModel(model_path='./model.onnx', config_path='./config.yaml')
+        object_detector = ObjectDetectionModel(model_path=model_path, config_path=config_path)
     except Exception as e:
         st.error(f"Não foi possível inicializar o detector de objetos: {e}")
         st.stop()
@@ -270,6 +276,7 @@ with tab4:
     # Exibe uma mensagem indicando que o streamer está ativo
     if webrtc_ctx.video_transformer:
         st.write("WebRTC streamer is running...")
+
 
 
 
