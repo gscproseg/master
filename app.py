@@ -204,7 +204,7 @@ pass
 
 #########################################################################################
 with tab4:
-    
+
     from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, WebRtcMode
     import av
     import cv2
@@ -222,6 +222,9 @@ with tab4:
                 st.success("Modelo ONNX carregado com sucesso!")
             except cv2.error as e:
                 st.error(f"Erro ao carregar o modelo ONNX: {e}")
+                raise e
+            except Exception as e:
+                st.error(f"Erro desconhecido ao carregar o modelo ONNX: {e}")
                 raise e
     
         def detect_objects(self, frame):
@@ -276,7 +279,6 @@ with tab4:
     # Exibe uma mensagem indicando que o streamer está ativo
     if webrtc_ctx.video_transformer:
         st.write("WebRTC streamer is running...")
-
 
 
 
