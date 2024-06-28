@@ -239,7 +239,8 @@ import numpy as np
             return img
     
     # Inicialização do modelo YOLOv5
-    yolo = YOLO_Pred(onnx_model='./best.onnx')
+    yolo1 = YOLO_Pred(onnx_model='./best.onnx',
+                      data_yaml='./data.yaml')
     
     # Função de callback para processar cada quadro de vídeo recebido
     def video_frame_callback(frame):
