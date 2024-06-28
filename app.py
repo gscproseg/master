@@ -203,29 +203,31 @@ pass
 
 
 #########################################################################################
-
-from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, WebRtcMode
-import av
-import cv2
-import numpy as np
-
-    # Classe para carregar e utilizar o modelo YOLOv5
-    class YOLO_Pred:
-        def __init__(self, xonnx_model):
-            self.xonnx_model = xonnx_model
-            self.yolo1 = cv2.dnn.readNetFromONNX(self.xonnx_model)
+with tab4:
+    
+    from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, WebRtcMode
+    import av
+    import cv2
+    import numpy as np
+    import streamlit as st
+    
+    # Classe para carregar e utilizar o modelo de detecção
+    class ObjectDetectionModel:
+        def __init__(self, model_path, config_path):
+            self.model_path = model_path
+            self.config_path = config_path
+            self.model = cv2.dnn.readNetFromONNX(self.model_path)
     
         def detect_objects(self, frame):
             img = frame.to_ndarray(format="bgr24")
     
             # Preprocessamento da imagem, se necessário
-            # Exemplo: redimensionamento para o tamanho esperado pelo modelo YOLOv5
             img_resized = cv2.resize(img, (640, 640))
     
-            # Detecção de objetos usando YOLOv5
+            # Detecção de objetos
             blob = cv2.dnn.blobFromImage(img_resized, 1/255.0, (640, 640), swapRB=True, crop=False)
-            self.yolo1.setInput(blob)
-            outputs = self.yolo.forward()
+            self.model.setInput(blob)
+            outputs = self.model.forward()
     
             # Processa as saídas para exibir as detecções na imagem
             for output in outputs:
@@ -238,14 +240,13 @@ import numpy as np
     
             return img
     
-    # Inicialização do modelo YOLOv5
-    yolo1 = YOLO_Pred(xonnx_model='./best.onnx',
-                      xdata_yaml='./data.yaml')
+    # Inicialização do modelo de detecção de objetos
+    object_detector = ObjectDetectionModel(model_path='./model.onnx', config_path='./config.yaml')
     
     # Função de callback para processar cada quadro de vídeo recebido
     def video_frame_callback(frame):
-        # Realiza a detecção de objetos usando o modelo YOLOv5
-        processed_frame = yolo1.detect_objects(frame)
+        # Realiza a detecção de objetos usando o modelo
+        processed_frame = object_detector.detect_objects(frame)
     
         # Retorna o quadro processado para exibição
         return av.VideoFrame.from_ndarray(processed_frame, format="bgr24")
