@@ -204,7 +204,6 @@ pass
 
 #########################################################################################
 
-
 import onnxruntime as ort
 import numpy as np
 import cv2
@@ -276,4 +275,5 @@ else:
 
     # Liberar a captura de vídeo
     cap.release()
+
 
