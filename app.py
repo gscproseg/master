@@ -209,27 +209,26 @@ import av
 import cv2
 import numpy as np
 
-class VideoTransformer(VideoTransformerBase):
-    def transform(self, frame):
-        img = frame.to_ndarray(format="bgr24")
 
-        # Realize qualquer processamento de imagem aqui
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+# load yolo model
+yolo = YOLO_Pred(onnx_model='./best.onnx',
+                 data_yaml='./data.yaml')
+st.balloons()
 
-        return av.VideoFrame.from_ndarray(img, format="bgr24")
 
-st.title("WebRTC Video Stream with YOLOv5")
+def video_frame_callback(frame):
+    img = frame.to_ndarray(format="bgr24")
+    # any operation 
+    #flipped = img[::-1,:,:]
+    pred_img = yolo.predictions(img)
 
-webrtc_ctx = webrtc_streamer(
-    key="example",
-    mode=WebRtcMode.SENDRECV,
-    video_transformer_factory=VideoTransformer,
-    async_transform=False
-)
+    return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
 
-if webrtc_ctx.video_transformer:
-    st.write("WebRTC streamer is running...")
+
+webrtc_streamer(key="example", 
+                video_frame_callback=video_frame_callback,
+                media_stream_constraints={"video":True,
+                                          "audio":False})
 
 
 
