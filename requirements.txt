@@ -1,4 +1,6 @@
 #av==9.2.0
+torchvision
+numpy
 av
 torch
 ffmpeg
@@ -27,3 +29,5 @@ twilio==8.10.1
 matplotlib
 
 pip-upgrade
+
+
