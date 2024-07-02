@@ -208,9 +208,8 @@ with tab4:
     import torch
     import cv2
     import numpy as np
-    import streamlit as st
     from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
-    from yolov5 import detect  # Assumindo que você tenha o YOLOv5 na mesma pasta do script
+    from yolo_predictions import YOLO_Pred # Assumindo que você tenha o YOLOv5 na mesma pasta do script
     
     # Carregar o modelo YOLOv5
     model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
