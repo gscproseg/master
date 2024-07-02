@@ -205,81 +205,36 @@ pass
 #########################################################################################
 with tab4:
 
-    from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, WebRtcMode
-    import av
+    import torch
     import cv2
     import numpy as np
     import streamlit as st
-    import os
+    from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
+    from yolov5 import detect  # Assumindo que você tenha o YOLOv5 na mesma pasta do script
     
-    # Classe para carregar e utilizar o modelo de detecção
-    class ObjectDetectionModel:
-        def __init__(self, model_path, config_path):
-            self.model_path = model_path
-            self.config_path = config_path
-            try:
-                self.model = cv2.dnn.readNetFromONNX(self.model_path)
-                st.success("Modelo ONNX carregado com sucesso!")
-            except cv2.error as e:
-                st.error(f"Erro ao carregar o modelo ONNX: {e}")
-                raise e
-            except Exception as e:
-                st.error(f"Erro desconhecido ao carregar o modelo ONNX: {e}")
-                raise e
+    # Carregar o modelo YOLOv5
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
     
-        def detect_objects(self, frame):
+    class YOLOv5Transformer(VideoTransformerBase):
+        def __init__(self):
+            self.model = model
+    
+        def transform(self, frame):
             img = frame.to_ndarray(format="bgr24")
     
-            # Preprocessamento da imagem, se necessário
-            img_resized = cv2.resize(img, (640, 640))
+            # Realizar a detecção
+            results = self.model(img)
     
-            # Detecção de objetos
-            blob = cv2.dnn.blobFromImage(img_resized, 1/255.0, (640, 640), swapRB=True, crop=False)
-            self.model.setInput(blob)
-            outputs = self.model.forward()
-    
-            # Processa as saídas para exibir as detecções na imagem
-            for output in outputs:
-                for detection in output:
-                    confidence = detection[4]
-                    if confidence > 0.5:  # Confiança mínima para exibir a detecção
-                        x, y, w, h = detection[:4] * np.array([img.shape[1], img.shape[0], img.shape[1], img.shape[0]])
-                        x, y, w, h = int(x - w / 2), int(y - h / 2), int(w), int(h)
-                        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            # Renderizar as detecções
+            for box in results.xyxy[0].cpu().numpy():
+                x1, y1, x2, y2, conf, cls = box
+                label = f"{results.names[int(cls)]} {conf:.2f}"
+                img = cv2.rectangle(img, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+                img = cv2.putText(img, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     
             return img
     
-    # Obtenha o caminho absoluto do arquivo
-    model_path = os.path.abspath("./model.onnx")
-    config_path = os.path.abspath("./config.yaml")
-    
-    # Inicialização do modelo de detecção de objetos
-    try:
-        object_detector = ObjectDetectionModel(model_path=model_path, config_path=config_path)
-    except Exception as e:
-        st.error(f"Não foi possível inicializar o detector de objetos: {e}")
-        st.stop()
-    
-    # Função de callback para processar cada quadro de vídeo recebido
-    def video_frame_callback(frame):
-        # Realiza a detecção de objetos usando o modelo
-        processed_frame = object_detector.detect_objects(frame)
-    
-        # Retorna o quadro processado para exibição
-        return av.VideoFrame.from_ndarray(processed_frame, format="bgr24")
-    
-    # Configuração do WebRTC Streamer com streamlit-webrtc
-    webrtc_ctx = webrtc_streamer(
-        key="example",
-        mode=WebRtcMode.SENDRECV,
-        video_frame_callback=video_frame_callback,
-        media_stream_constraints={"video": True, "audio": False}
-    )
-    
-    # Exibe uma mensagem indicando que o streamer está ativo
-    if webrtc_ctx.video_transformer:
-        st.write("WebRTC streamer is running...")
+    st.title("YOLOv5 Real-time Object Detection")
 
-
-
+webrtc_streamer(key="yolov5", video_transformer_factory=YOLOv5Transformer)
 
