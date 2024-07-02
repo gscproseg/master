@@ -208,32 +208,95 @@ with tab4:
     import torch
     import cv2
     import numpy as np
+    import streamlit as st
     from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
-    from yolo_predictions import YOLO_Pred # Assumindo que você tenha o YOLOv5 na mesma pasta do script
+    import os
+    
+    # Certifique-se de que o YOLOv5 está no caminho
+    YOLOV5_DIR = './yolov5'
+    if not os.path.exists(YOLOV5_DIR):
+        st.error(f"YOLOv5 directory not found: {YOLOV5_DIR}")
+        st.stop()
+    
+    # Adicione o caminho do YOLOv5 ao sys.path para importar corretamente
+    import sys
+    sys.path.append(YOLOV5_DIR)
+    from models.common import DetectMultiBackend
+    from utils.torch_utils import select_device
+    from utils.general import check_img_size, non_max_suppression, scale_coords
+    from utils.plots import Annotator, colors
+    
+    # Caminho do modelo treinado e arquivo de configuração
+    MODEL_PATH = './best.pt'
+    DATA_PATH = './data.yaml'
+    
+    if not os.path.exists(MODEL_PATH):
+        st.error(f"Model file not found: {MODEL_PATH}")
+        st.stop()
+    
+    if not os.path.exists(DATA_PATH):
+        st.error(f"Data file not found: {DATA_PATH}")
+        st.stop()
     
     # Carregar o modelo YOLOv5
-    model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
+    device = select_device('')
+    model = DetectMultiBackend(MODEL_PATH, device=device, dnn=False)
+    stride, names, pt = model.stride, model.names, model.pt
+    imgsz = check_img_size((640, 640), s=stride)
     
     class YOLOv5Transformer(VideoTransformerBase):
         def __init__(self):
             self.model = model
+            self.detect = False
     
         def transform(self, frame):
             img = frame.to_ndarray(format="bgr24")
     
-            # Realizar a detecção
-            results = self.model(img)
+            if self.detect:
+                img = cv2.resize(img, imgsz)
+                img = np.transpose(img, (2, 0, 1))
+                img = np.expand_dims(img, axis=0)
+                img = np.ascontiguousarray(img)
     
-            # Renderizar as detecções
-            for box in results.xyxy[0].cpu().numpy():
-                x1, y1, x2, y2, conf, cls = box
-                label = f"{results.names[int(cls)]} {conf:.2f}"
-                img = cv2.rectangle(img, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-                img = cv2.putText(img, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                img = torch.from_numpy(img).to(device)
+                img = img.half() if pt else img.float()
+                img /= 255.0
     
-            return img
+                pred = self.model(img, augment=False, visualize=False)
+                pred = non_max_suppression(pred, 0.25, 0.45, classes=None, agnostic=False)
+    
+                for i, det in enumerate(pred):
+                    annotator = Annotator(img, line_width=3, example=str(names))
+                    if len(det):
+                        det[:, :4] = scale_coords(img.shape[2:], det[:, :4], frame.shape).round()
+                        for *xyxy, conf, cls in reversed(det):
+                            label = f'{names[int(cls)]} {conf:.2f}'
+                            annotator.box_label(xyxy, label, color=colors(cls, True))
+    
+                result_img = annotator.result()
+                result_img = result_img.permute(1, 2, 0).cpu().numpy()
+                return result_img
+            else:
+                return img
     
     st.title("YOLOv5 Real-time Object Detection")
+    
+    start_detection = st.button("Start Detection")
+    stop_detection = st.button("Stop Detection")
+    
+    if start_detection:
+        webrtc_streamer(key="yolov5", video_transformer_factory=YOLOv5Transformer)
+        YOLOv5Transformer.detect = True
+    
+    if stop_detection:
+        YOLOv5Transformer.detect = False
+    
+    st.markdown("""
+    ### Instruções:
+    1. Certifique-se de que os arquivos `best.pt` e `data.yaml` estão no mesmo diretório que este script.
+    2. Execute o comando `streamlit run app.py` para iniciar o aplicativo.
+    3. Permita o acesso à webcam quando solicitado.
+    4. Clique em "Start Detection" para iniciar a detecção e "Stop Detection" para parar.
+    """)
 
-webrtc_streamer(key="yolov5", video_transformer_factory=YOLOv5Transformer)
 
