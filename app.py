@@ -205,98 +205,75 @@ pass
 #########################################################################################
 with tab4:
 
-    import torch
     import cv2
+    import onnxruntime
     import numpy as np
-    import streamlit as st
-    from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
-    import os
+    import yaml
     
-    # Certifique-se de que o YOLOv5 está no caminho
-    YOLOV5_DIR = './yolov5'
-    if not os.path.exists(YOLOV5_DIR):
-        st.error(f"YOLOv5 directory not found: {YOLOV5_DIR}")
-        st.stop()
+    # Função para realizar a pré-processamento da imagem
+    def preprocess(image):
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = cv2.resize(image, (640, 640))  # Redimensione conforme necessário para seu modelo
+        image = image.astype(np.float32)
+        image /= 255.0  # Normalizar para [0, 1]
+        image = np.transpose(image, (2, 0, 1))  # Alterar o formato para [1, 3, 640, 640]
+        image = np.expand_dims(image, axis=0)
+        return image
     
-    # Adicione o caminho do YOLOv5 ao sys.path para importar corretamente
-    import sys
-    sys.path.append(YOLOV5_DIR)
-    from models.common import DetectMultiBackend
-    from utils.torch_utils import select_device
-    from utils.general import check_img_size, non_max_suppression, scale_coords
-    from utils.plots import Annotator, colors
+    # Função para realizar a pós-processamento da saída do modelo
+    def postprocess(outputs, img_shape):
+        # A função de pós-processamento pode variar com base no formato da saída do seu modelo.
+        # Aqui você deve converter as saídas em caixas delimitadoras, confidências e classes.
+        pass  # Implementar de acordo com seu modelo
     
-    # Caminho do modelo treinado e arquivo de configuração
-    MODEL_PATH = './best.pt'
-    DATA_PATH = './data.yaml'
+    # Carregar o modelo ONNX
+    session = onnxruntime.InferenceSession('best.onnx')
     
-    if not os.path.exists(MODEL_PATH):
-        st.error(f"Model file not found: {MODEL_PATH}")
-        st.stop()
+    # Carregar o arquivo data.yaml
+    with open('data.yaml', 'r') as f:
+        data = yaml.safe_load(f)
     
-    if not os.path.exists(DATA_PATH):
-        st.error(f"Data file not found: {DATA_PATH}")
-        st.stop()
+    # Inicializar a captura de vídeo
+    cap = cv2.VideoCapture(0)  # 0 para a webcam padrão
     
-    # Carregar o modelo YOLOv5
-    device = select_device('')
-    model = DetectMultiBackend(MODEL_PATH, device=device, dnn=False)
-    stride, names, pt = model.stride, model.names, model.pt
-    imgsz = check_img_size((640, 640), s=stride)
+    # Verificar se a captura de vídeo foi inicializada corretamente
+    if not cap.isOpened():
+        print("Erro ao abrir a webcam.")
+        exit()
     
-    class YOLOv5Transformer(VideoTransformerBase):
-        def __init__(self):
-            self.model = model
-            self.detect = False
+    while True:
+        # Capturar um quadro da webcam
+        ret, frame = cap.read()
     
-        def transform(self, frame):
-            img = frame.to_ndarray(format="bgr24")
+        # Verificar se o quadro foi capturado corretamente
+        if not ret:
+            print("Erro ao capturar o quadro.")
+            break
     
-            if self.detect:
-                img = cv2.resize(img, imgsz)
-                img = np.transpose(img, (2, 0, 1))
-                img = np.expand_dims(img, axis=0)
-                img = np.ascontiguousarray(img)
+        # Pré-processar o quadro
+        input_image = preprocess(frame)
     
-                img = torch.from_numpy(img).to(device)
-                img = img.half() if pt else img.float()
-                img /= 255.0
+        # Realizar a inferência
+        outputs = session.run(None, {session.get_inputs()[0].name: input_image})
     
-                pred = self.model(img, augment=False, visualize=False)
-                pred = non_max_suppression(pred, 0.25, 0.45, classes=None, agnostic=False)
+        # Pós-processar a saída
+        boxes, confidences, class_ids = postprocess(outputs, frame.shape)
     
-                for i, det in enumerate(pred):
-                    annotator = Annotator(img, line_width=3, example=str(names))
-                    if len(det):
-                        det[:, :4] = scale_coords(img.shape[2:], det[:, :4], frame.shape).round()
-                        for *xyxy, conf, cls in reversed(det):
-                            label = f'{names[int(cls)]} {conf:.2f}'
-                            annotator.box_label(xyxy, label, color=colors(cls, True))
+        # Desenhar as caixas delimitadoras no quadro
+        for box, conf, class_id in zip(boxes, confidences, class_ids):
+            x, y, w, h = box
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            cv2.putText(frame, f"{data['names'][class_id]}: {conf:.2f}", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
     
-                result_img = annotator.result()
-                result_img = result_img.permute(1, 2, 0).cpu().numpy()
-                return result_img
-            else:
-                return img
+        # Exibir o quadro com as detecções
+        cv2.imshow('Webcam - YOLOv4', frame)
     
-    st.title("YOLOv5 Real-time Object Detection")
+        # Pressionar 'q' para sair do loop
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
     
-    start_detection = st.button("Start Detection")
-    stop_detection = st.button("Stop Detection")
-    
-    if start_detection:
-        webrtc_streamer(key="yolov5", video_transformer_factory=YOLOv5Transformer)
-        YOLOv5Transformer.detect = True
-    
-    if stop_detection:
-        YOLOv5Transformer.detect = False
-    
-    st.markdown("""
-    ### Instruções:
-    1. Certifique-se de que os arquivos `best.pt` e `data.yaml` estão no mesmo diretório que este script.
-    2. Execute o comando `streamlit run app.py` para iniciar o aplicativo.
-    3. Permita o acesso à webcam quando solicitado.
-    4. Clique em "Start Detection" para iniciar a detecção e "Stop Detection" para parar.
-    """)
+    # Liberar a captura de vídeo e fechar todas as janelas
+    cap.release()
+    cv2.destroyAllWindows()
 
 
