@@ -27,8 +27,6 @@ tornado==6.2
 pydub==0.25.1
 twilio==8.10.1
 matplotlib
-twilio
-agora
 pip-upgrade
 
 
