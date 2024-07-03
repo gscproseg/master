@@ -201,5 +201,40 @@ with tab3:
 
 pass
 
-
 #########################################################################################
+
+with tab4:
+    st.header("MLens - USB")
+
+    # Inicializar a captura de vídeo da câmera USB
+    cap = cv2.VideoCapture(0)  # Ajuste o índice conforme necessário
+
+    if not cap.isOpened():
+        st.write("Erro ao abrir a câmera USB.")
+    else:
+        st.write("Câmera USB conectada. Pressione 'q' para sair.")
+
+    # Configuração da exibição de vídeo
+    stframe = st.empty()
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            st.write("Erro ao capturar o quadro.")
+            break
+
+        # Realizar a detecção no quadro
+        result_frame = yolo_model.predictions(frame)
+
+        # Converter o quadro BGR para RGB para exibição no Streamlit
+        result_frame_rgb = cv2.cvtColor(result_frame, cv2.COLOR_BGR2RGB)
+
+        # Exibir o quadro no Streamlit
+        stframe.image(result_frame_rgb, channels="RGB", use_column_width=True)
+
+        # Verificar se a tecla 'q' foi pressionada para sair
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
