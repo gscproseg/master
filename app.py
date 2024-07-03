@@ -206,6 +206,8 @@ pass
 with tab4:
 
     st.header("MLens - USB")
+    import cv2
+
 
     run_detection = st.button("Iniciar Detecção")
 
