@@ -71,7 +71,7 @@ with tab2:
 
     st.header("MyxoNet")
     
-    from yolo_predictions import YOLO_Pred
+    from yolov5_predictions import YOLO_Pred
     from PIL import Image
     import numpy as np
 
@@ -203,109 +203,3 @@ pass
 
 
 #########################################################################################
-with tab4:
-
-    import cv2
-    import onnxruntime
-    import numpy as np
-    import yaml
-    
-    # Função para realizar a pré-processamento da imagem
-    def preprocess(image):
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = cv2.resize(image, (640, 640))  # Redimensione conforme necessário para seu modelo
-        image = image.astype(np.float32)
-        image /= 255.0  # Normalizar para [0, 1]
-        image = np.transpose(image, (2, 0, 1))  # Alterar o formato para [1, 3, 640, 640]
-        image = np.expand_dims(image, axis=0)
-        return image
-    
-    # Função para realizar a pós-processamento da saída do modelo
-    def postprocess(outputs, img_shape, conf_threshold=0.4, nms_threshold=0.45):
-        # YOLOv5 outputs
-        predictions = outputs[0]
-        
-        boxes, confidences, class_ids = [], [], []
-        image_w, image_h = img_shape[1], img_shape[0]
-        x_factor = image_w / 640
-        y_factor = image_h / 640
-    
-        for pred in predictions:
-            confidence = pred[4]
-            if confidence >= conf_threshold:
-                classes_scores = pred[5:]
-                class_id = np.argmax(classes_scores)
-                class_score = classes_scores[class_id]
-    
-                if class_score >= conf_threshold:
-                    cx, cy, w, h = pred[:4]
-                    left = int((cx - 0.5 * w) * x_factor)
-                    top = int((cy - 0.5 * h) * y_factor)
-                    width = int(w * x_factor)
-                    height = int(h * y_factor)
-                    boxes.append([left, top, width, height])
-                    confidences.append(float(confidence))
-                    class_ids.append(class_id)
-    
-        # Apply Non-Maximum Suppression
-        indices = cv2.dnn.NMSBoxes(boxes, confidences, conf_threshold, nms_threshold)
-        nms_boxes, nms_confs, nms_class_ids = [], [], []
-        for i in indices:
-            i = i[0]
-            nms_boxes.append(boxes[i])
-            nms_confs.append(confidences[i])
-            nms_class_ids.append(class_ids[i])
-    
-        return nms_boxes, nms_confs, nms_class_ids
-    
-    # Carregar o modelo ONNX
-    session = onnxruntime.InferenceSession('best.onnx')
-    
-    # Carregar o arquivo data.yaml
-    with open('data.yaml', 'r') as f:
-        data = yaml.safe_load(f)
-    
-    # Inicializar a captura de vídeo
-    cap = cv2.VideoCapture(0)  # 0 para a webcam padrão
-    
-    # Verificar se a captura de vídeo foi inicializada corretamente
-    if not cap.isOpened():
-        print("Erro ao abrir a webcam.")
-        exit()
-    
-    while True:
-        # Capturar um quadro da webcam
-        ret, frame = cap.read()
-    
-        # Verificar se o quadro foi capturado corretamente
-        if not ret:
-            print("Erro ao capturar o quadro.")
-            break
-    
-        # Pré-processar o quadro
-        input_image = preprocess(frame)
-    
-        # Realizar a inferência
-        outputs = session.run(None, {session.get_inputs()[0].name: input_image})
-    
-        # Pós-processar a saída
-        boxes, confidences, class_ids = postprocess(outputs, frame.shape)
-    
-        # Desenhar as caixas delimitadoras no quadro
-        for box, conf, class_id in zip(boxes, confidences, class_ids):
-            x, y, w, h = box
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
-            cv2.putText(frame, f"{data['names'][class_id]}: {conf:.2f}", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-    
-        # Exibir o quadro com as detecções
-        cv2.imshow('Webcam - YOLOv5', frame)
-    
-        # Pressionar 'q' para sair do loop
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    
-    # Liberar a captura de vídeo e fechar todas as janelas
-    cap.release()
-    cv2.destroyAllWindows()
-
-
