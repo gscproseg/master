@@ -204,3 +204,30 @@ pass
 #########################################################################################
 
 with tab4:
+
+    import streamlit as st
+    from agora import AccessToken, SimpleTokenBuilder, RtcTokenBuilder, Role
+    
+    # Configuração do Agora.io
+    app_id = 'YOUR_APP_ID'
+    app_cert = 'YOUR_APP_CERTIFICATE'
+    
+    # Função para gerar token de acesso Agora.io
+    def generate_agora_token(channel_name, user_id):
+        token = RtcTokenBuilder.build_token_with_uid(app_id, app_cert, channel_name, user_id, Role.PUBLISHER, 3600)
+        return token
+    
+    # Interface Streamlit para iniciar uma chamada de vídeo
+    st.title('Agora.io Video Example')
+    
+    channel_name = st.text_input('Informe o nome do canal:')
+    user_id = st.text_input('Informe seu ID de usuário:')
+    
+    if st.button('Iniciar Chamada de Vídeo'):
+        # Gerar token de acesso
+        token = generate_agora_token(channel_name, user_id)
+        
+        # Iniciar a chamada de vídeo usando o token gerado
+        # Exibir a chamada de vídeo usando HTML ou outro elemento do Streamlit
+        st.write(f'Usuário {user_id} conectado ao canal {channel_name}')
+
