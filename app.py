@@ -214,11 +214,15 @@ with tab4:
             print("Erro ao abrir a câmera.")
             return
     
+        print("Câmera aberta com sucesso.")
+    
         while True:
             ret, frame = cap.read()
             if not ret:
                 print("Erro ao capturar o quadro.")
                 break
+    
+            print("Quadro capturado com sucesso.")
     
             cv2.imshow("Câmera", frame)
     
@@ -227,7 +231,8 @@ with tab4:
     
         cap.release()
         cv2.destroyAllWindows()
+    
+    test_camera()
 
-test_camera()
 
 
