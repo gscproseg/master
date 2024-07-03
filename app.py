@@ -221,10 +221,42 @@ with tab4:
         return image
     
     # Função para realizar a pós-processamento da saída do modelo
-    def postprocess(outputs, img_shape):
-        # A função de pós-processamento pode variar com base no formato da saída do seu modelo.
-        # Aqui você deve converter as saídas em caixas delimitadoras, confidências e classes.
-        pass  # Implementar de acordo com seu modelo
+    def postprocess(outputs, img_shape, conf_threshold=0.4, nms_threshold=0.45):
+        # YOLOv5 outputs
+        predictions = outputs[0]
+        
+        boxes, confidences, class_ids = [], [], []
+        image_w, image_h = img_shape[1], img_shape[0]
+        x_factor = image_w / 640
+        y_factor = image_h / 640
+    
+        for pred in predictions:
+            confidence = pred[4]
+            if confidence >= conf_threshold:
+                classes_scores = pred[5:]
+                class_id = np.argmax(classes_scores)
+                class_score = classes_scores[class_id]
+    
+                if class_score >= conf_threshold:
+                    cx, cy, w, h = pred[:4]
+                    left = int((cx - 0.5 * w) * x_factor)
+                    top = int((cy - 0.5 * h) * y_factor)
+                    width = int(w * x_factor)
+                    height = int(h * y_factor)
+                    boxes.append([left, top, width, height])
+                    confidences.append(float(confidence))
+                    class_ids.append(class_id)
+    
+        # Apply Non-Maximum Suppression
+        indices = cv2.dnn.NMSBoxes(boxes, confidences, conf_threshold, nms_threshold)
+        nms_boxes, nms_confs, nms_class_ids = [], [], []
+        for i in indices:
+            i = i[0]
+            nms_boxes.append(boxes[i])
+            nms_confs.append(confidences[i])
+            nms_class_ids.append(class_ids[i])
+    
+        return nms_boxes, nms_confs, nms_class_ids
     
     # Carregar o modelo ONNX
     session = onnxruntime.InferenceSession('best.onnx')
@@ -266,7 +298,7 @@ with tab4:
             cv2.putText(frame, f"{data['names'][class_id]}: {conf:.2f}", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
     
         # Exibir o quadro com as detecções
-        cv2.imshow('Webcam - YOLOv4', frame)
+        cv2.imshow('Webcam - YOLOv5', frame)
     
         # Pressionar 'q' para sair do loop
         if cv2.waitKey(1) & 0xFF == ord('q'):
