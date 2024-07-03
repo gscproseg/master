@@ -204,37 +204,75 @@ pass
 #########################################################################################
 
 with tab4:
-    st.header("MLens - USB")
 
-    # Inicializar a captura de vídeo da câmera USB
-    cap = cv2.VideoCapture(0)  # Ajuste o índice conforme necessário
-
-    if not cap.isOpened():
-        st.write("Erro ao abrir a câmera USB.")
-    else:
-        st.write("Câmera USB conectada. Pressione 'q' para sair.")
-
-    # Configuração da exibição de vídeo
-    stframe = st.empty()
-
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            st.write("Erro ao capturar o quadro.")
-            break
-
-        # Realizar a detecção no quadro
-        result_frame = yolo_model.predictions(frame)
-
-        # Converter o quadro BGR para RGB para exibição no Streamlit
-        result_frame_rgb = cv2.cvtColor(result_frame, cv2.COLOR_BGR2RGB)
-
-        # Exibir o quadro no Streamlit
-        stframe.image(result_frame_rgb, channels="RGB", use_column_width=True)
-
-        # Verificar se a tecla 'q' foi pressionada para sair
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    cap.release()
-    cv2.destroyAllWindows()
+    import streamlit as st
+    from yolov5_predictions import YOLO_Pred  # Certifique-se de que o nome do arquivo e a classe estejam corretos
+    from PIL import Image
+    import numpy as np
+    import cv2
+    
+    st.title("MyxoNet")
+    
+    # Inicialização do modelo YOLOv5 com o arquivo ONNX e o arquivo YAML
+    model_path = 'best.onnx'
+    data_yaml_path = 'data.yaml'
+    
+    yolo_model = YOLO_Pred(model_path, data_yaml_path)
+    
+    # Função para realizar a detecção em uma imagem
+    def detect_objects(image):
+        image_np = np.array(image)
+        result_image = yolo_model.predictions(image_np)
+        return result_image
+    
+    # Definir as abas do Streamlit
+    tab1, tab2, tab3, tab4 = st.tabs(["Upload de Imagem", "MLens - USB", "Outra Aba 3", "Outra Aba 4"])
+    
+    with tab1:
+        st.header("Upload de Imagem")
+        uploaded_file = st.file_uploader("Escolha uma imagem...", type=["jpg", "jpeg", "png"])
+    
+        if uploaded_file is not None:
+            image = Image.open(uploaded_file)
+            st.image(image, caption='Imagem Carregada', use_column_width=True)
+            st.write("")
+            st.write("Detecção em progresso...")
+    
+            result_image = detect_objects(image)
+            st.image(result_image, caption='Imagem com Detecções', use_column_width=True)
+    
+    with tab4:
+        st.header("MLens - USB")
+    
+        run_detection = st.button("Iniciar Detecção")
+    
+        if run_detection:
+            # Inicializar a captura de vídeo da câmera USB
+            cap = cv2.VideoCapture(0)  # Ajuste o índice conforme necessário
+    
+            if not cap.isOpened():
+                st.write("Erro ao abrir a câmera USB.")
+            else:
+                stframe = st.empty()
+    
+                while True:
+                    ret, frame = cap.read()
+                    if not ret:
+                        st.write("Erro ao capturar o quadro.")
+                        break
+    
+                    # Realizar a detecção no quadro
+                    result_frame = yolo_model.predictions(frame)
+    
+                    # Converter o quadro BGR para RGB para exibição no Streamlit
+                    result_frame_rgb = cv2.cvtColor(result_frame, cv2.COLOR_BGR2RGB)
+    
+                    # Exibir o quadro no Streamlit
+                    stframe.image(result_frame_rgb, channels="RGB", use_column_width=True)
+    
+                    # Verificar se o botão "Parar Detecção" foi pressionado
+                    if st.button("Parar Detecção"):
+                        break
+    
+                cap.release()
+                cv2.destroyAllWindows()
