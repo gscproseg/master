@@ -202,3 +202,32 @@ with tab3:
 pass
 
 #########################################################################################
+
+with tab4:
+
+    import cv2
+
+    def test_camera():
+        cap = cv2.VideoCapture(0)  # Tente alterar o índice para 1, 2, etc., se houver múltiplas câmeras
+    
+        if not cap.isOpened():
+            print("Erro ao abrir a câmera.")
+            return
+    
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                print("Erro ao capturar o quadro.")
+                break
+    
+            cv2.imshow("Câmera", frame)
+    
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+    
+        cap.release()
+        cv2.destroyAllWindows()
+
+test_camera()
+
+
