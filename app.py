@@ -4,7 +4,7 @@ import streamlit as st
 
 # Configuração da página
 st.set_page_config(
-    page_title= "MyxoNet",
+    page_title= "MLens",
     page_icon= "🧠",  # Defina o ícone da página como um emoji de tubarão
     layout="wide",  # Defina o layout como "wide" para aproveitar melhor o espaço na tela
     initial_sidebar_state="collapsed"  # Defina a barra lateral como colapsada
