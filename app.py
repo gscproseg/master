@@ -205,39 +205,37 @@ pass
 
 with tab4:
 
-    st.header("MLens - USB")
-    import cv2
+        st.header("MLens - USB")
 
-
-    run_detection = st.button("Iniciar Detecção")
-
-    if run_detection:
-        # Inicializar a captura de vídeo da câmera USB
-        cap = cv2.VideoCapture(0)  # Ajuste o índice conforme necessário
-
-        if not cap.isOpened():
-            st.write("Erro ao abrir a câmera USB.")
-        else:
-            stframe = st.empty()
-
-            while True:
-                ret, frame = cap.read()
-                if not ret:
-                    st.write("Erro ao capturar o quadro.")
-                    break
-
-                # Realizar a detecção no quadro
-                result_frame = yolo_model.predictions(frame)
-
-                # Converter o quadro BGR para RGB para exibição no Streamlit
-                result_frame_rgb = cv2.cvtColor(result_frame, cv2.COLOR_BGR2RGB)
-
-                # Exibir o quadro no Streamlit
-                stframe.image(result_frame_rgb, channels="RGB", use_column_width=True)
-
-                # Verificar se o botão "Parar Detecção" foi pressionado
-                if st.button("Parar Detecção"):
-                    break
-
-            cap.release()
-            cv2.destroyAllWindows()
+        run_detection = st.button("Iniciar Detecção")
+    
+        if run_detection:
+            # Inicializar a captura de vídeo da câmera USB
+            cap = cv2.VideoCapture(0)  # Ajuste o índice conforme necessário
+    
+            if not cap.isOpened():
+                st.write("Erro ao abrir a câmera USB.")
+            else:
+                stframe = st.empty()
+    
+                while True:
+                    ret, frame = cap.read()
+                    if not ret:
+                        st.write("Erro ao capturar o quadro.")
+                        break
+    
+                    # Realizar a detecção no quadro
+                    result_frame = yolo_model.predictions(frame)
+    
+                    # Converter o quadro BGR para RGB para exibição no Streamlit
+                    result_frame_rgb = cv2.cvtColor(result_frame, cv2.COLOR_BGR2RGB)
+    
+                    # Exibir o quadro no Streamlit
+                    stframe.image(result_frame_rgb, channels="RGB", use_column_width=True)
+    
+                    # Verificar se o botão "Parar Detecção" foi pressionado
+                    if st.button("Parar Detecção"):
+                        break
+    
+                cap.release()
+                cv2.destroyAllWindows()
