@@ -204,29 +204,3 @@ pass
 #########################################################################################
 
 with tab4:
-
-    from twilio.rest import Client
-    from twilio.jwt.access_token import AccessToken
-    from twilio.jwt.access_token.grants import VideoGrant
-    
-    # Substitua com suas credenciais do Twilio
-    account_sid = 'YOUR_ACCOUNT_SID'
-    auth_token = 'YOUR_AUTH_TOKEN'
-    
-    # Inicialize o cliente Twilio
-    client = Client(account_sid, auth_token)
-    
-    # ID do usuário que está acessando o vídeo (pode ser o ID do usuário logado no seu sistema)
-    identity = 'user123'
-    
-    # Crie um token de acesso com permissão para vídeo
-    token = AccessToken(account_sid, api_key, api_secret, identity=identity)
-    video_grant = VideoGrant(room='my-room')  # Nome da sala de vídeo
-    token.add_grant(video_grant)
-    
-    # Gere o token e retorne para o cliente
-    print(token.to_jwt().decode())
-
-    
-
-
