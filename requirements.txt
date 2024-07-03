@@ -28,7 +28,6 @@ pydub==0.25.1
 twilio==8.10.1
 matplotlib
 ultralytics
-pip --upgrade git+https://github.com/ultralytics/yolov5.git
 pip-upgrade
 
 
