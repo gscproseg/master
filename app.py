@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # Criação das guias
-tab1, tab2, tab3 = st.tabs(["MLens", "Detecção em Imagens", "Detecção em Vídeo"])
+tab1, tab2, tab3, tab4 = st.tabs(["MLens", "Detecção em Imagens", "Detecção em Vídeo", "Detecão em RT"])
 
 # Conteúdo da página "Home"
 with tab1:
@@ -27,7 +27,7 @@ st.write("Desenvolvido por [Carneiro, G.S](http://lattes.cnpq.br/377104762625954
 
 with tab2:
 
-    st.header("MLens - Image")
+    st.header("Detecção em Imagens")
     
     from yolov5_predictions import YOLO_Pred
     from PIL import Image
@@ -104,7 +104,7 @@ pass
 import time  # Importe o módulo time
 
 with tab3:
-    st.header("MLens - Video")
+    st.header("Detecção em Video")
 
     # Função para detecção em vídeo
     def detect_video(upload_file):
@@ -158,6 +158,10 @@ with tab3:
             detect_video(uploaded_file)
 
 pass
+
+
+with tab2:
+    st.subheader("Não disponível nesta Versão, Aguarde!")
 
 #########################################################################################
 
