@@ -40,7 +40,7 @@ class YOLO_Pred:
         for i in range(len(detections)):
             row = detections[i]
             confidence = row[4]
-            if confidence > 0.4:
+            if confidence > 0.25:
                 class_score = row[5:].max()
                 class_id = row[5:].argmax()
                 if class_score > 0.25:
