@@ -160,7 +160,7 @@ with tab3:
 pass
 
 
-with tab2:
+with tab4:
     st.subheader("Não disponível nesta Versão, Aguarde!")
 
 #########################################################################################
