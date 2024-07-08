@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # Criação das guias
-tab1, tab2, tab3, tab4 = st.tabs(["Home", "MLens - Image", "MLens - VIDEO"])
+tab1, tab2, tab3 = st.tabs(["Home", "MLens - Image", "MLens - VIDEO"])
 
 # Conteúdo da página "Home"
 with tab1:
