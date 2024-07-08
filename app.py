@@ -15,10 +15,9 @@ tab1, tab2, tab3, tab4 = st.tabs(["MLens", "Detecção em Imagens", "Detecção 
 
 # Conteúdo da página "Home"
 with tab1:
-
     st.subheader("Bem-vindo ao MLens")
     # Adicionar a imagem ao espaço em branco
-    st.image("./Mlens.png")  #  caminho da sua imagem
+    st.image("./Mlens.png", use_column_width=True)  #  caminho da sua imagem
 
 # Adicione as informações adicionais
 st.write("Desenvolvido por [Carneiro, G.S](http://lattes.cnpq.br/3771047626259544)")
