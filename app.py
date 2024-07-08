@@ -69,7 +69,7 @@ st.write("Desenvolvido por [Carneiro, G.S](http://lattes.cnpq.br/377104762625954
 
 with tab2:
 
-    st.header("MyxoNet")
+    st.header("MLens - Image")
     
     from yolov5_predictions import YOLO_Pred
     from PIL import Image
@@ -146,7 +146,7 @@ pass
 import time  # Importe o módulo time
 
 with tab3:
-    st.header("Detecção em Vídeo")
+    st.header("MLens - Image")
 
     # Função para detecção em vídeo
     def detect_video(upload_file):
