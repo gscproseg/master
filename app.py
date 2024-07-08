@@ -146,7 +146,7 @@ pass
 import time  # Importe o módulo time
 
 with tab3:
-    st.header("MLens - Image")
+    st.header("MLens - Video")
 
     # Função para detecção em vídeo
     def detect_video(upload_file):
