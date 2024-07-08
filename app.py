@@ -18,7 +18,7 @@ with tab1:
 
     st.subheader("Bem-vindo ao MLens")
     # Adicionar a imagem ao espaço em branco
-    st.image("MLens.PNG")  #  caminho da sua imagem
+    st.image("./MLens.png")  #  caminho da sua imagem
 
 # Adicione as informações adicionais
 st.write("Desenvolvido por [Carneiro, G.S](http://lattes.cnpq.br/3771047626259544)")
