@@ -20,7 +20,7 @@ with tab1:
     st.image("./Mlens.png", use_column_width=True)  #  caminho da sua imagem
 
 # Adicione as informações adicionais
-st.write("Desenvolvido por [Carneiro, G.S](http://lattes.cnpq.br/3771047626259544)")
+st.write("Desenvolvido por LIMT - Ufra e [Carneiro, G.S](http://lattes.cnpq.br/3771047626259544)")
 
 #######################################################
 
