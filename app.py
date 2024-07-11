@@ -162,68 +162,77 @@ pass
 with tab4:
     st.subheader("Não disponível nesta Versão, Aguarde!")
 
-    import streamlit as st
-    import asyncio
-    from streamlit_webrtc import (
-        VideoProcessorBase,
-        RTCConfiguration,
-        WebRtcStreamerState,
-        webrtc_streamer
-    )
-    import av
-    from yolo_predictions import YOLO_Pred
+    import cv2
+    import onnxruntime
+    import numpy as np
+    import yaml
     
-    # Carregar o modelo YOLO
-    yolocam = YOLO_Pred(onnx_model='./models/best.onnx', data_yaml='./models/data.yaml')
+    # Função para realizar a pré-processamento da imagem
+    def preprocess(image):
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = cv2.resize(image, (640, 640))
+        image = image.astype(np.float32)
+        image /= 255.0
+        image = np.transpose(image, (2, 0, 1))
+        image = np.expand_dims(image, axis=0)
+        return image
     
-    # Definir configuração RTC (WebRTC)
-    rtc_configuration = RTCConfiguration(
-        {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
-    )
+    # Função para realizar a pós-processamento da saída do modelo
+    def postprocess(outputs, img_shape):
+        # A função de pós-processamento pode variar com base no formato da saída do seu modelo.
+        # Aqui você deve converter as saídas em caixas delimitadoras, confidências e classes.
+        pass  # Implementar de acordo com seu modelo
     
-    class YOLOVideoProcessor(VideoProcessorBase):
-        async def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
-            try:
-                img_cam = frame.to_ndarray(format="bgr24")
+    # Carregar o modelo ONNX
+    session = onnxruntime.InferenceSession('best.onnx')
     
-                # Processamento assíncrono
-                pred_img_video = await asyncio.get_event_loop().run_in_executor(
-                    None, yolocam.predictions, img_cam
-                )
+    # Carregar o arquivo data.yaml
+    with open('data.yaml', 'r') as f:
+        data = yaml.safe_load(f)
     
-                # Adicionar mensagem de log para verificar as previsões
-                st.write(f"Previsões: {pred_img_video}")
+    # Inicializar a captura de vídeo
+    cap = cv2.VideoCapture(0)  # 0 para a webcam padrão
     
-                return av.VideoFrame.from_ndarray(pred_img_video, format="bgr24")
-            except Exception as e:
-                st.error(f"Erro durante o processamento do frame: {e}")
-                return frame
+    # Verificar se a captura de vídeo foi inicializada corretamente
+    if not cap.isOpened():
+        print("Erro ao abrir a webcam.")
+        exit()
     
-    async def main():
-        # Configurar e iniciar a transmissão WebRTC
-        webrtc_ctx = webrtc_streamer(
-            key="example",
-            video_processor_factory=YOLOVideoProcessor,
-            rtc_configuration=rtc_configuration,
-            async_processing=True,
-            media_stream_constraints={"video": True, "audio": False},
-        )
+    while True:
+        # Capturar um quadro da webcam
+        ret, frame = cap.read()
     
-        # Loop principal para atualizar a interface
-        while True:
-            if webrtc_ctx.state.playing:
-                break  # Sair do loop quando a transmissão estiver ativa
+        # Verificar se o quadro foi capturado corretamente
+        if not ret:
+            print("Erro ao capturar o quadro.")
+            break
     
-            st.write("Aguardando a transmissão de vídeo começar...")
+        # Pré-processar o quadro
+        input_image = preprocess(frame)
     
-            # Atualizar a interface com um pequeno atraso
-            await asyncio.sleep(0.5)  # Atraso de 0.5 segundos
+        # Realizar a inferência
+        outputs = session.run(None, {session.get_inputs()[0].name: input_image})
     
-        st.write("Streaming de vídeo com detecção de objetos está ativo.")
+        # Pós-processar a saída
+        boxes, confidences, class_ids = postprocess(outputs, frame.shape)
     
-    # Executar a função principal assíncrona
-    if __name__ == "__main__":
-        asyncio.run(main())
+        # Desenhar as caixas delimitadoras no quadro
+        for box, conf, class_id in zip(boxes, confidences, class_ids):
+            x, y, w, h = box
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            cv2.putText(frame, f"{data['names'][class_id]}: {conf:.2f}", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+    
+        # Exibir o quadro com as detecções
+        cv2.imshow('Webcam - YOLOv5', frame)
+    
+        # Pressionar 'q' para sair do loop
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    
+    # Liberar a captura de vídeo e fechar todas as janelas
+    cap.release()
+    cv2.destroyAllWindows()
+
 
 #########################################################################################
 
