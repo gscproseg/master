@@ -163,7 +163,6 @@ with tab4:
     st.subheader("Não disponível nesta Versão, Aguarde!")
 
     import cv2
-    import onnxruntime
     import numpy as np
     import yaml
     
