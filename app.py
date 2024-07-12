@@ -162,24 +162,38 @@ pass
 with tab4:
     st.subheader("Não disponível nesta Versão, Aguarde!")
 
+    import streamlit as st
     from streamlit_webrtc import webrtc_streamer
     import av
     from yolo_pred import YOLO_Pred
     
     # Carregar o modelo YOLO
-    yolo = YOLO_Pred('.best.onnx', '.data.yaml')
+    yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
     def video_frame_callback(frame):
-        img = frame.to_ndarray(format="bgr24")
-        
-        # Fazer as previsões
-        pred_img = yolo.pred(img)
-        
-        return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
+        try:
+            img = frame.to_ndarray(format="bgr24")
+            st.write("Frame capturado da câmera")
     
-    webrtc_streamer(key="example", 
-                    video_frame_callback=video_frame_callback,
-                    media_stream_constraints={"video":True,"audio":False})
+            # Fazer as previsões
+            pred_img = yolo.predictions(img)
+            st.write("Previsão realizada com sucesso")
+    
+            return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
+        except Exception as e:
+            st.error(f"Erro no processamento do frame: {e}")
+            return frame
+    
+    try:
+        webrtc_ctx = webrtc_streamer(key="example", 
+                                     video_frame_callback=video_frame_callback,
+                                     media_stream_constraints={"video": True, "audio": False})
+        if webrtc_ctx.state.playing:
+            st.write("Streaming de vídeo ativo")
+        else:
+            st.write("Aguardando o início do streaming de vídeo...")
+    except Exception as e:
+        st.error(f"Erro ao iniciar o webrtc_streamer: {e}")
 
 
 #########################################################################################
