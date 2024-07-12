@@ -167,13 +167,13 @@ with tab4:
     from yolo_pred import YOLO_Pred
     
     # Carregar o modelo YOLO
-    yolo = YOLO_Pred('./models/best.onnx', './models/data.yaml')
+    yolo = YOLO_Pred('.best.onnx', '.data.yaml')
     
     def video_frame_callback(frame):
         img = frame.to_ndarray(format="bgr24")
         
         # Fazer as previsões
-        pred_img = yolo.predictions(img)
+        pred_img = yolo.pred(img)
         
         return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
     
