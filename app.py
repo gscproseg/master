@@ -28,7 +28,7 @@ with tab2:
 
     st.header("Detecção em Imagens")
     
-    from yolov5_predictions import YOLO_Pred
+    from yolo_pred import YOLO_Pred
     from PIL import Image
     import numpy as np
 
@@ -161,6 +161,25 @@ pass
 
 with tab4:
     st.subheader("Não disponível nesta Versão, Aguarde!")
+
+    from streamlit_webrtc import webrtc_streamer
+    import av
+    from yolo_pred import YOLO_Pred
+    
+    # Carregar o modelo YOLO
+    yolo = YOLO_Pred('./models/best.onnx', './models/data.yaml')
+    
+    def video_frame_callback(frame):
+        img = frame.to_ndarray(format="bgr24")
+        
+        # Fazer as previsões
+        pred_img = yolo.predictions(img)
+        
+        return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
+    
+    webrtc_streamer(key="example", 
+                    video_frame_callback=video_frame_callback,
+                    media_stream_constraints={"video":True,"audio":False})
 
 
 #########################################################################################
