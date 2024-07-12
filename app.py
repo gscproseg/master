@@ -168,7 +168,7 @@ with tab4:
     from yolo_pred import YOLO_Pred
     
     with st.spinner('Por favor, aguarde enquanto analisamos a sua imagem'):
-        yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml'))
+        yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
     def video_frame_callback(frame):
         try:
