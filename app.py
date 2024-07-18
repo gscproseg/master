@@ -88,7 +88,7 @@ with tab2:
                 original_size_img = cv2.resize(pred_img, (image_obj.width, image_obj.height))
                 pred_img_resized = Image.fromarray(original_size_img)
                 
-                # Mostra a imagem com as detecções
+                # Mostra a imagem com as detecções em uma coluna
                 st.image(pred_img_resized, use_column_width=True)
     
                 # Adiciona a contagem das classes na imagem detectada
@@ -102,7 +102,7 @@ with tab2:
                 original_size_img_counts = cv2.resize(pred_img, (image_obj.width, image_obj.height))
                 pred_img_counts_resized = Image.fromarray(original_size_img_counts)
     
-                # Mostra a imagem com o texto das contagens
+                # Mostra a imagem com o texto das contagens em outra coluna
                 st.subheader("Contagem das Classes Detectadas")
                 st.image(pred_img_counts_resized, channels='BGR', use_column_width=True)
     
