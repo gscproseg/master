@@ -40,7 +40,7 @@ python-dateutil==2.9.0.post0
 pytz==2024.1
 PyYAML==6.0.1
 referencing==0.35.1
-requests==2.32.3
+requests
 rich==13.7.1
 rpds-py==0.18.1
 six==1.16.0
@@ -55,7 +55,6 @@ typing_extensions==4.12.2
 tzdata==2024.1
 urllib3==2.2.2
 watchdog==4.0.1
-request==2.32.3
 
 
 
