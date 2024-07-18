@@ -29,6 +29,7 @@ st.write("Desenvolvido por LIMT-Ufra e [Carneiro, G.S](http://lattes.cnpq.br/377
 
 # Função para upload de imagem
 with tab2:
+
     def upload_image():
         image_file = st.file_uploader(label='Enviar Imagem')
         if image_file is not None:
@@ -89,8 +90,11 @@ with tab2:
                 pred_img_resized = Image.fromarray(original_size_img)
                 
                 # Mostra a imagem com as detecções
-                st.image(pred_img_resized, use_column_width=True)
-    
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.image(pred_img_resized, use_column_width=True)
+                    
                 # Adiciona a contagem das classes na imagem detectada
                 y_offset = 20
                 for class_name, count in class_counts.items():
@@ -103,21 +107,10 @@ with tab2:
                 pred_img_counts_resized = Image.fromarray(original_size_img_counts)
     
                 # Mostra a imagem com o texto das contagens
-                st.subheader("Contagem das Classes Detectadas")
-                st.image(pred_img_counts_resized, channels='BGR', use_column_width=True)
+                with col2:
+                    st.subheader("Contagem das Classes Detectadas")
+                    st.image(pred_img_counts_resized, channels='BGR', use_column_width=True)
     
-    # Configuração da interface do Streamlit
-    st.set_page_config(page_title="Detecção de Myxozoários", page_icon="🔬", layout="wide")
-    
-    # Abas da interface
-    tabs = ["Detecção em Imagens", "Detecção em Vídeo"]
-    tab_selected = st.sidebar.radio("Escolha o modo de detecção:", tabs)
-    
-    # Conteúdo da aba selecionada
-    if tab_selected == "Detecção em Imagens":
-        tab2_content()
-    elif tab_selected == "Detecção em Vídeo":
-        st.write("Funcionalidade de detecção em vídeo ainda não implementada.")
 
 
 with tab3:
