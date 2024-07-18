@@ -33,6 +33,8 @@ class YOLO_Pred:
         confidences = []
         classes = []
 
+        class_counts = {label: 0 for label in self.labels}
+
         image_w, image_h = input_image.shape[:2]
         x_factor = image_w / INPUT_WH_YOLO
         y_factor = image_h / INPUT_WH_YOLO
@@ -40,10 +42,10 @@ class YOLO_Pred:
         for i in range(len(detections)):
             row = detections[i]
             confidence = row[4]
-            if confidence > 0.25:
+            if confidence > 0.7:
                 class_score = row[5:].max()
                 class_id = row[5:].argmax()
-                if class_score > 0.25:
+                if class_score > 0.50:
                     cx, cy, w, h = row[0:4]
                     left = int((cx - 0.5 * w) * x_factor)
                     top = int((cy - 0.5 * h) * y_factor)
@@ -56,20 +58,21 @@ class YOLO_Pred:
 
         boxes_np = np.array(boxes).tolist()
         confidences_np = np.array(confidences).tolist()
-        index = np.array(cv2.dnn.NMSBoxes(boxes_np, confidences_np, 0.3, 0.5)).flatten()
+        index = np.array(cv2.dnn.NMSBoxes(boxes_np, confidences_np, 0.25, 0.6)).flatten()
 
         for ind in index:
             x, y, w, h = boxes_np[ind]
             bb_conf = int(confidences_np[ind] * 100)
             classes_id = classes[ind]
             class_name = self.labels[classes_id]
+            class_counts[class_name] += 1
             colors = self.generate_colors(classes_id)
             text = f'{class_name}: {bb_conf}%'
             cv2.rectangle(image, (x, y), (x + w, y + h), colors, 2)
             cv2.rectangle(image, (x, y - 30), (x + w, y), colors, -1)
-            cv2.putText(image, text, (x, y - 10), cv2.FONT_HERSHEY_PLAIN, 0.8, (0, 0, 0), 1)
+            cv2.putText(image, text, (x, y - 10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (1, 0, 0), 1)
 
-        return image
+        return image, class_counts
 
     def generate_colors(self, ID):
         np.random.seed(10)
