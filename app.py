@@ -92,7 +92,7 @@ with tab3:
     st.write('Por favor, utilize videos curtos para obter as identificações')
 
     def detect_video(upload_file):
-        yolo = YOLO_Pred(onnx_model='./bestL.onnx', data_yaml='./data.yaml')
+        yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
 
         temp_video_path = Path(tempfile.NamedTemporaryFile().name)
         with open(temp_video_path, 'wb') as temp_file:
