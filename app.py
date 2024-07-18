@@ -114,7 +114,7 @@ with tab3:
             for class_name, count in class_counts.items():
                 text = f'{class_name}: {count}'
                 cv2.putText(pred_frame, text, (10, 30 + 30 * list(class_counts.keys()).index(class_name)),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+                            cv2.FONT_HERSHEY_COMPLEX | cv2.FONT_ITALIC, 1, (255, 0, 0), 2, cv2.LINE_AA)
 
             st.image(pred_frame, channels='RGB', use_column_width=True)
 
