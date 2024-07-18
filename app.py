@@ -56,11 +56,11 @@ with tab2:
             prediction = False
             image_obj = Image.open(object['file'])
     
-            col1, col2 = st.columns(2)
+            col1, col2 = st.beta_columns(2)
     
             with col1:
                 st.info('Pré-visualização da imagem')
-                st.image(image_obj)
+                st.image(image_obj, use_column_width=True)
     
             with col2:
                 st.subheader('Confira abaixo os detalhes do arquivo')
@@ -88,7 +88,7 @@ with tab2:
                 original_size_img = cv2.resize(pred_img, (image_obj.width, image_obj.height))
                 pred_img_resized = Image.fromarray(original_size_img)
                 
-                # Mostra a imagem com as detecções em uma coluna
+                # Mostra a imagem com as detecções
                 st.image(pred_img_resized, use_column_width=True)
     
                 # Adiciona a contagem das classes na imagem detectada
@@ -102,7 +102,7 @@ with tab2:
                 original_size_img_counts = cv2.resize(pred_img, (image_obj.width, image_obj.height))
                 pred_img_counts_resized = Image.fromarray(original_size_img_counts)
     
-                # Mostra a imagem com o texto das contagens em outra coluna
+                # Mostra a imagem com o texto das contagens
                 st.subheader("Contagem das Classes Detectadas")
                 st.image(pred_img_counts_resized, channels='BGR', use_column_width=True)
     
