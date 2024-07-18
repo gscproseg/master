@@ -96,7 +96,7 @@ with tab2:
                 y_offset = 20
                 for class_name, count in class_counts.items():
                     text = f'{class_name}: {count}'
-                    cv2.putText(pred_img_counts, text, (20, y_offset), cv2.FONT_HERSHEY_COMPLEX | cv2.FONT_ITALIC, 1, (0, 255, 0), 1)
+                    cv2.putText(pred_img_counts, text, (20, y_offset), cv2.FONT_HERSHEY_COMPLEX | cv2.FONT_ITALIC, 1, (0, 0, 0), 1)
                     y_offset += 30
                 
                 # Mostra a imagem com o texto das contagens
