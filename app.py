@@ -28,72 +28,76 @@ with tab1:
 st.write("Desenvolvido por LIMT-Ufra e [Carneiro, G.S](http://lattes.cnpq.br/3771047626259544)")
 
 with tab2:
-    # Função para upload de imagem
+
     def upload_image():
-        image_file = st.file_uploader(label='Enviar Imagem')
-        if image_file is not None:
-            size_mb = image_file.size / (1024 ** 2)
-            file_details = {"filename": image_file.name, "filetype": image_file.type, "filesize": "{:,.2f} MB".format(size_mb)}
-            if file_details['filetype'] in ('image/png', 'image/jpeg'):
-                st.success('Tipo de arquivo imagem VALIDO (png ou jpeg)')
-                return {"file": image_file, "details": file_details}
-            else:
-                st.error('Tipo de arquivo de imagem INVALIDO')
-                st.error('Envie apenas arquivos nos formatos png, jpg e jpeg')
-                return None
-    
-    # Função principal para detecção em imagens
-    def main():
-        st.header("Detecção em Imagens")
-        st.write('Por favor, carregue a imagem para obter a identificação')
-    
-        with st.spinner('Por favor, aguarde enquanto analisamos a sua imagem'):
-            yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
-    
-        object = upload_image()
-    
-        if object:
-            prediction = False
-            image_obj = Image.open(object['file'])
-    
-            col1, col2 = st.columns(2)
-    
-            with col1:
-                st.info('Pré-visualização da imagem')
-                st.image(image_obj)
-    
-            with col2:
-                st.subheader('Confira abaixo os detalhes do arquivo')
-                st.json(object['details'])
-                button = st.button('Detectar Myxozoário na Imagem')
-                if button:
-                    with st.spinner("Obtendo as Detecções dos Myxozoários na imagem. Aguarde"):
-                        image_array = np.array(image_obj)
-    
-                        if len(image_array.shape) == 2:
-                            input_image = cv2.cvtColor(image_array, cv2.COLOR_GRAY2RGB)
-                        else:
-                            input_image = image_array
-    
-                        # Realiza a predição e obtém as contagens das classes
-                        pred_img, class_counts = yolo.predictions(input_image)
-                        pred_img_obj = Image.fromarray(pred_img)
-                        prediction = True
-    
-            if prediction:
-                st.subheader("Imagem com a possível detecção")
-                st.caption("Detecção de Myxozoários")
-                
-                # Mostra a imagem com as detecções
-                st.image(pred_img_obj, use_column_width=True)
-    
-                # Mostra a contagem das classes detectadas
-                st.subheader("Contagem das Classes Detectadas")
-                for class_name, count in class_counts.items():
-                    st.write(f"{class_name}: {count}")
-    
-    if __name__ == "__main__":
-        main()
+    image_file = st.file_uploader(label='Enviar Imagem')
+    if image_file is not None:
+        size_mb = image_file.size / (1024 ** 2)
+        file_details = {"filename": image_file.name, "filetype": image_file.type, "filesize": "{:,.2f} MB".format(size_mb)}
+        if file_details['filetype'] in ('image/png', 'image/jpeg'):
+            st.success('Tipo de arquivo imagem VALIDO (png ou jpeg)')
+            return {"file": image_file, "details": file_details}
+        else:
+            st.error('Tipo de arquivo de imagem INVALIDO')
+            st.error('Envie apenas arquivos nos formatos png, jpg e jpeg')
+            return None
+
+# Função principal para detecção em imagens
+def main():
+    st.header("Detecção em Imagens")
+    st.write('Por favor, carregue a imagem para obter a identificação')
+
+    with st.spinner('Por favor, aguarde enquanto analisamos a sua imagem'):
+        yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
+
+    object = upload_image()
+
+    if object:
+        prediction = False
+        image_obj = Image.open(object['file'])
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.info('Pré-visualização da imagem')
+            st.image(image_obj)
+
+        with col2:
+            st.subheader('Confira abaixo os detalhes do arquivo')
+            st.json(object['details'])
+            button = st.button('Detectar Myxozoário na Imagem')
+            if button:
+                with st.spinner("Obtendo as Detecções dos Myxozoários na imagem. Aguarde"):
+                    image_array = np.array(image_obj)
+
+                    if len(image_array.shape) == 2:
+                        input_image = cv2.cvtColor(image_array, cv2.COLOR_GRAY2RGB)
+                    else:
+                        input_image = image_array
+
+                    # Realiza a predição e obtém as contagens das classes
+                    pred_img, class_counts = yolo.predictions(input_image)
+                    pred_img_obj = Image.fromarray(pred_img)
+                    prediction = True
+
+        if prediction:
+            st.subheader("Imagem com a possível detecção")
+            st.caption("Detecção de Myxozoários")
+            
+            # Mostra a imagem com as detecções
+            st.image(pred_img_obj, use_column_width=True)
+
+            # Adiciona a contagem das classes na imagem detectada
+            for class_name, count in class_counts.items():
+                text = f'{class_name}: {count}'
+                cv2.putText(pred_img, text, (20, 50), cv2.FONT_HERSHEY_COMPLEX | cv2.FONT_ITALIC, 1, (255, 255, 255), 1)
+            
+            # Mostra a imagem com o texto das contagens
+            st.subheader("Contagem das Classes Detectadas")
+            st.image(pred_img, channels='BGR', use_column_width=True)
+
+if __name__ == "__main__":
+    main()
 
 with tab3:
     st.header("Detecção em Vídeo")
