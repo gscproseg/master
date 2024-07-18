@@ -27,17 +27,6 @@ with tab1:
 
 st.write("Desenvolvido por LIMT-Ufra e [Carneiro, G.S](http://lattes.cnpq.br/3771047626259544)")
 
-with tab2:
-
-    import streamlit as st
-from PIL import Image
-import numpy as np
-import cv2
-import yaml
-from yaml.loader import SafeLoader
-
-# Definindo a classe YOLO_Pred com os métodos necessários
-
 # Função para upload de imagem
 with tab2:
     def upload_image():
