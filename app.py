@@ -89,7 +89,7 @@ with tab2:
 
 with tab3:
     st.header("Detecção em Vídeo")
-    st.write('Por favor, utilize videos curtos para obter as identificações')
+    st.write('Por favor, utilize vídeos curtos para obter as identificações')
 
     def detect_video(upload_file):
         yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
@@ -109,6 +109,13 @@ with tab3:
 
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             pred_frame, class_counts = yolo.predictions(frame_rgb)
+
+            # Adicionar contagem das classes detectadas no frame
+            for class_name, count in class_counts.items():
+                text = f'{class_name}: {count}'
+                cv2.putText(pred_frame, text, (10, 30 + 30 * list(class_counts.keys()).index(class_name)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+
             st.image(pred_frame, channels='RGB', use_column_width=True)
 
             if time.time() - start_time > 30:
