@@ -29,6 +29,17 @@ st.write("Desenvolvido por LIMT-Ufra e [Carneiro, G.S](http://lattes.cnpq.br/377
 
 with tab2:
 
+    import streamlit as st
+from PIL import Image
+import numpy as np
+import cv2
+import yaml
+from yaml.loader import SafeLoader
+
+# Definindo a classe YOLO_Pred com os métodos necessários
+
+# Função para upload de imagem
+with tab2:
     def upload_image():
         image_file = st.file_uploader(label='Enviar Imagem')
         if image_file is not None:
@@ -42,8 +53,8 @@ with tab2:
                 st.error('Envie apenas arquivos nos formatos png, jpg e jpeg')
                 return None
     
-    # Função principal para detecção em imagens
-    def main():
+    # Função principal para a tab2
+    def tab2_content():
         st.header("Detecção em Imagens")
         st.write('Por favor, carregue a imagem para obter a identificação')
     
@@ -56,7 +67,7 @@ with tab2:
             prediction = False
             image_obj = Image.open(object['file'])
     
-            col3, col4 = st.beta_columns(2)
+            col1, col2 = st.beta_columns(2)
     
             with col1:
                 st.info('Pré-visualização da imagem')
@@ -106,8 +117,19 @@ with tab2:
                 st.subheader("Contagem das Classes Detectadas")
                 st.image(pred_img_counts_resized, channels='BGR', use_column_width=True)
     
-    if __name__ == "__main__":
-        main()
+    # Configuração da interface do Streamlit
+    st.set_page_config(page_title="Detecção de Myxozoários", page_icon="🔬", layout="wide")
+    
+    # Abas da interface
+    tabs = ["Detecção em Imagens", "Detecção em Vídeo"]
+    tab_selected = st.sidebar.radio("Escolha o modo de detecção:", tabs)
+    
+    # Conteúdo da aba selecionada
+    if tab_selected == "Detecção em Imagens":
+        tab2_content()
+    elif tab_selected == "Detecção em Vídeo":
+        st.write("Funcionalidade de detecção em vídeo ainda não implementada.")
+
 
 with tab3:
     st.header("Detecção em Vídeo")
