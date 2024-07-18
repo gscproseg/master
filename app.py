@@ -84,8 +84,12 @@ with tab2:
                 st.subheader("Imagem com a possível detecção")
                 st.caption("Detecção de Myxozoários")
                 
+                # Redimensiona a imagem com detecções para o tamanho original
+                original_size_img = cv2.resize(pred_img, (image_obj.width, image_obj.height))
+                pred_img_resized = Image.fromarray(original_size_img)
+                
                 # Mostra a imagem com as detecções
-                st.image(pred_img_obj, use_column_width=True)
+                st.image(pred_img_resized, use_column_width=True)
     
                 # Adiciona a contagem das classes na imagem detectada
                 y_offset = 20
@@ -94,9 +98,13 @@ with tab2:
                     cv2.putText(pred_img, text, (20, y_offset), cv2.FONT_HERSHEY_COMPLEX | cv2.FONT_ITALIC, 1, (255, 255, 255), 1)
                     y_offset += 30
                 
+                # Redimensiona a imagem com contagens para o tamanho original
+                original_size_img_counts = cv2.resize(pred_img, (image_obj.width, image_obj.height))
+                pred_img_counts_resized = Image.fromarray(original_size_img_counts)
+    
                 # Mostra a imagem com o texto das contagens
                 st.subheader("Contagem das Classes Detectadas")
-                st.image(pred_img, channels='BGR', use_column_width=True)
+                st.image(pred_img_counts_resized, channels='BGR', use_column_width=True)
     
     if __name__ == "__main__":
         main()
