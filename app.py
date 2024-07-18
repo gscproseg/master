@@ -128,6 +128,7 @@ with tab3:
         if st.button('Iniciar Detecção em Vídeo'):
             detect_video(uploaded_file)
 
+
 with tab4:
 
     st.header("Detecção em Tempo Real")
