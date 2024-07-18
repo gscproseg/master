@@ -56,7 +56,7 @@ with tab2:
             prediction = False
             image_obj = Image.open(object['file'])
     
-            col1, col2 = st.beta_columns(2)
+            col3, col4 = st.beta_columns(2)
     
             with col1:
                 st.info('Pré-visualização da imagem')
