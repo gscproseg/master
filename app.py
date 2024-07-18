@@ -88,9 +88,11 @@ with tab2:
                 st.image(pred_img_obj, use_column_width=True)
     
                 # Adiciona a contagem das classes na imagem detectada
+                y_offset = 20
                 for class_name, count in class_counts.items():
                     text = f'{class_name}: {count}'
-                    cv2.putText(pred_img, text, (20, 50), cv2.FONT_HERSHEY_COMPLEX | cv2.FONT_ITALIC, 1, (255, 255, 255), 1)
+                    cv2.putText(pred_img, text, (20, y_offset), cv2.FONT_HERSHEY_COMPLEX | cv2.FONT_ITALIC, 1, (255, 255, 255), 1)
+                    y_offset += 30
                 
                 # Mostra a imagem com o texto das contagens
                 st.subheader("Contagem das Classes Detectadas")
