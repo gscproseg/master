@@ -35,13 +35,38 @@ with tab2:
         if image_file is not None:
             size_mb = image_file.size / (1024 ** 2)
             file_details = {"filename": image_file.name, "filetype": image_file.type, "filesize": "{:,.2f} MB".format(size_mb)}
-            if file_details['filetype'] in ('image/png', 'image/jpeg'):
-                st.success('Tipo de arquivo imagem VALIDO (png ou jpeg)')
+            
+            if file_details['filetype'] in ('image/png', 'image/jpeg', 'image/heic'):
+                if file_details['filetype'] == 'image/heic':
+                    try:
+                        heif_file = pyheif.read_heif(image_file)
+                        image = Image.frombytes(
+                            heif_file.mode, 
+                            heif_file.size, 
+                            heif_file.data,
+                            "raw",
+                            heif_file.mode,
+                            heif_file.stride,
+                        )
+                        # Converte a imagem HEIC para PNG
+                        with io.BytesIO() as output:
+                            image.save(output, format="PNG")
+                            image_file = output.getvalue()
+                            file_details['filetype'] = 'image/png'
+                    except Exception as e:
+                        st.error(f"Erro ao converter arquivo HEIC: {e}")
+                        return None
+                st.success('Tipo de arquivo imagem VALIDO (png, jpeg ou heic)')
                 return {"file": image_file, "details": file_details}
             else:
                 st.error('Tipo de arquivo de imagem INVALIDO')
-                st.error('Envie apenas arquivos nos formatos png, jpg e jpeg')
+                st.error('Envie apenas arquivos nos formatos png, jpg, jpeg e heic')
                 return None
+
+# Exemplo de uso da função upload_image
+uploaded_image = upload_image()
+if uploaded_image:
+    st.image(uploaded_image["file"], caption=uploaded_image["details"]["filename"])
     
     # Função principal para detecção em imagens
     def main():
