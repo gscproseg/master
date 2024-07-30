@@ -49,7 +49,7 @@ with tab2:
         st.write('Por favor, carregue a imagem para obter a identificação')
     
         with st.spinner('Por favor, aguarde enquanto analisamos a sua imagem'):
-            yolo = YOLO_Pred(onnx_model='./bestL.onnx', data_yaml='./data.yaml')
+            yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
     
         object = upload_image()
     
@@ -114,7 +114,7 @@ with tab3:
     st.write('Por favor, utilize vídeos curtos para obter as identificações')
 
     def detect_video(upload_file):
-        yolo = YOLO_Pred(onnx_model='./bestL.onnx', data_yaml='./data.yaml')
+        yolo = YOLO_Pred(onnx_model='./best.onnx', data_yaml='./data.yaml')
 
         temp_video_path = Path(tempfile.NamedTemporaryFile().name)
         with open(temp_video_path, 'wb') as temp_file:
@@ -156,7 +156,7 @@ with tab4:
     st.header("Detecção em Tempo Real")
     st.write('Por favor, selecione o equipamente de imageamento para obter as identificações')
 
-    yolo = YOLO_Pred('./bestL.onnx', './data.yaml')
+    yolo = YOLO_Pred('./best.onnx', './data.yaml')
 
     def video_frame_callback(frame):
         img = frame.to_ndarray(format="bgr24")
