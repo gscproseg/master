@@ -131,6 +131,8 @@ if uploaded_image:
     
     if __name__ == "__main__":
         main()
+
+pass
     
 with tab3:
     st.header("Detecção em Vídeo")
@@ -173,6 +175,7 @@ with tab3:
         if st.button('Iniciar Detecção em Vídeo'):
             detect_video(uploaded_file)
 
+pass
 
 with tab4:
 
@@ -199,7 +202,7 @@ with tab4:
 
     webrtc_streamer(key="example", video_frame_callback=video_frame_callback, media_stream_constraints={"video": True, "audio": False})
 
-
+pass
 
 with tab5:
     st.subheader("Use o Qr para saber mais sobre nossos integrantes")
