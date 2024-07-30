@@ -70,7 +70,7 @@ class YOLO_Pred:
             text = f'{class_name}: {bb_conf}%'
             cv2.rectangle(image, (x, y), (x + w, y + h), colors, 2)
             cv2.rectangle(image, (x, y - 30), (x + w, y), colors, -1)
-            cv2.putText(image, text, (x, y - 10), cv2.FONT_HERSHEY_COMPLEX | cv2.FONT_ITALIC, 0.8, (1, 0, 0), 1)
+            cv2.putText(image, text, (x, y - 10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (1, 0, 0), 1)
 
         return image, class_counts
 
