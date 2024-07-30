@@ -129,10 +129,8 @@ if uploaded_image:
                     st.subheader("Contagem das Classes Detectadas")
                     st.image(pred_img_counts, channels='BGR', use_column_width=True)
     
-    if __name__ == "__main__":
-        main()
-
-pass
+        if __name__ == "__main__":
+            main()
     
 with tab3:
     st.header("Detecção em Vídeo")
