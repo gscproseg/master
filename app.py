@@ -1,5 +1,5 @@
 import streamlit as st
-from yolov5_predictions import YOLO_Pred
+from yolov5_predictions_count import YOLO_Pred
 from PIL import Image
 import numpy as np
 import cv2
