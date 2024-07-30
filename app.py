@@ -28,7 +28,7 @@ st.write("Desenvolvido por LIMT-Ufra e [Carneiro, G.S](http://lattes.cnpq.br/377
 with tab2:
 
     import streamlit as st
-    from yolov5_predictions import YOLO_Pred
+    from yolov5_predictions_count import YOLO_Pred
     from PIL import Image
     import numpy as np
     import cv2
@@ -168,7 +168,7 @@ with tab4:
 
     from streamlit_webrtc import webrtc_streamer
     import av
-    from yolo_predictions import YOLO_Pred
+    from yolov5_predictions_count import YOLO_Pred
 
     # load yolo model
     yolo = YOLO_Pred('./best.onnx',
