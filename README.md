@@ -30,7 +30,7 @@ A Tabela 2 resume os resultados dos modelos YOLOv5n, YOLOv5s, YOLOv5m e YOLOv5l 
 Matrizes de Confusão
 A matriz de confusão é uma tabela que apresenta a contagem desses valores, geralmente organizada da seguinte forma:
 
-![Confusion Matrix]('./figure20.jpg')  # ou o caminho correto se estiver em uma pasta
+![Confusion Matrix](./Figure20.jpeg)
 
 Interpretação dos Valores na Matriz de Confusão
 TP: Indica a eficácia do modelo em identificar corretamente as instâncias da classe positiva.
