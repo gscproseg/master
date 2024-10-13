@@ -5,6 +5,15 @@
 
 [![Acessar o MLens App](https://img.shields.io/badge/Acessar%20o%20MLens%20App-blue?style=for-the-badge&logo=appveyor)](https://mlensapp.streamlit.app/)
 
+Introdução
+A classe Myxozoa é composta por mais de 70 gêneros e cerca de 2.600 espécies, todas endoparasitas obrigatórios (Lom et al., 2013; Fiala, 2015). Muitos desses parasitas são responsáveis por causar doenças graves conhecidas como mixosporidioses (Jones, Bartholomew, Zhang, 2015). De acordo com Lom e Arthur (1989), variáveis morfológicas e morfométricas são essenciais para a definição dos mixosporos e seu agrupamento taxonômico.
+
+Entre os myxozoários, os gêneros Henneguya (Carvalho et al., 2020) e Myxobolus desempenham papéis significativos como parasitas da ictiofauna (Zago et al., 2022). Esses gêneros, de natureza polifilética, têm ampla distribuição global e são os mais estudados, parasitando tanto peixes de água doce quanto marinhos, além de répteis e anfíbios (Lom & Dyková, 2006; Atkinson, 2011). A distribuição geográfica desses parasitas é influenciada por fatores ambientais como temperatura e qualidade da água, bem como pela disponibilidade de hospedeiros (Okamura, Gruhl, Bartholomew, 2015; Jerônimo et al., 2022; Lauringson et al., 2023).
+
+Com o advento da Inteligência Artificial (IA), impulsionada por avanços contínuos no campo da ciência, tecnologias computacionais especializadas se tornaram cada vez mais presentes. Conforme Sichman et al. (2021), a IA tem desempenhado um papel fundamental na modernização da parasitologia, auxiliando na detecção de parasitas com uma precisão e eficiência antes inatingíveis. Tecnologias como as Convolutional Neural Networks (CNNs) têm sido aplicadas amplamente em visão computacional, destacando-se na classificação e detecção de objetos parasitários em imagens microscópicas, muitas vezes com intervenção mínima de especialistas humanos (Rahimzadeh & Attar, 2020; Yaacoub et al., 2020).
+
+Neste trabalho, desenvolvemos o MLens, um WebAPP em versão beta projetado para realizar a detecção e classificação automatizada dos gêneros Myxobolus e Henneguya em imagens de microscopia de luz. Usando a rede neural YOLOv5, buscamos contribuir para uma maior eficiência e precisão no diagnóstico parasitológico.
+
 
 
 A **Tabela 1**  resume os principais hiperparâmetros usados durante o treinamento dos modelos, conforme destacado por _Huang et al. (2018)_ e _Du (2018)_. Esses parâmetros foram essenciais para otimizar a detecção de myxozoários nos gêneros **Henneguya** e **Myxobolus**.
