@@ -5,7 +5,9 @@
 
 [![Acessar o MLens App](https://img.shields.io/badge/Acessar%20o%20MLens%20App-blue?style=for-the-badge&logo=appveyor)](https://mlensapp.streamlit.app/)
 
-Introdução
+##Introdução
+
+
 A classe Myxozoa é composta por mais de 70 gêneros e cerca de 2.600 espécies, todas endoparasitas obrigatórios (Lom et al., 2013; Fiala, 2015). Muitos desses parasitas são responsáveis por causar doenças graves conhecidas como mixosporidioses (Jones, Bartholomew, Zhang, 2015). De acordo com Lom e Arthur (1989), variáveis morfológicas e morfométricas são essenciais para a definição dos mixosporos e seu agrupamento taxonômico.
 
 Entre os myxozoários, os gêneros Henneguya (Carvalho et al., 2020) e Myxobolus desempenham papéis significativos como parasitas da ictiofauna (Zago et al., 2022). Esses gêneros, de natureza polifilética, têm ampla distribuição global e são os mais estudados, parasitando tanto peixes de água doce quanto marinhos, além de répteis e anfíbios (Lom & Dyková, 2006; Atkinson, 2011). A distribuição geográfica desses parasitas é influenciada por fatores ambientais como temperatura e qualidade da água, bem como pela disponibilidade de hospedeiros (Okamura, Gruhl, Bartholomew, 2015; Jerônimo et al., 2022; Lauringson et al., 2023).
