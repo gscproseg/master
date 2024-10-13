@@ -1,3 +1,6 @@
+![MLens Logo](https://raw.githubusercontent.com/gscproseg/master/main/Mlens.png)
+
+
 A **Tabela 1**  resume os principais hiperparâmetros usados durante o treinamento dos modelos, conforme destacado por _Huang et al. (2018)_ e _Du (2018)_. Esses parâmetros foram essenciais para otimizar a detecção de myxozoários nos gêneros **Henneguya** e **Myxobolus**.
 
 *Tabela 1 - Hiperparâmetros utilizados no treinamento*:
