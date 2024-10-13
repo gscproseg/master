@@ -36,6 +36,12 @@ A matriz de confusão é uma tabela que apresenta a contagem desses valores, ger
 ![Confusion Matrix](https://raw.githubusercontent.com/gscproseg/master/main/Figure20.jpg)
 
 
+
+
+
+
+
+
 Interpretação dos Valores na Matriz de Confusão
 TP: Indica a eficácia do modelo em identificar corretamente as instâncias da classe positiva.
 FP: Indica a quantidade de vezes que o modelo errou ao identificar uma instância como positiva.
