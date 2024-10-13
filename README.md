@@ -17,7 +17,7 @@ Com o advento da Inteligência Artificial (IA), impulsionada por avanços contí
 Neste trabalho, desenvolvemos o MLens, um WebAPP em versão beta projetado para realizar a detecção e classificação automatizada dos gêneros Myxobolus e Henneguya em imagens de microscopia de luz. Usando a rede neural YOLOv5, buscamos contribuir para uma maior eficiência e precisão no diagnóstico parasitológico.
 
 
-![Figura 1](https://raw.githubusercontent.com/gscproseg/master/main/Figure1.png)
+| Aqui está uma descrição da Figura 1 e o que ela representa. | ![Figura 1](https://raw.githubusercontent.com/gscproseg/master/main/Figure1.png) |
 
 
 A **Tabela 1**  resume os principais hiperparâmetros usados durante o treinamento dos modelos, conforme destacado por _Huang et al. (2018)_ e _Du (2018)_. Esses parâmetros foram essenciais para otimizar a detecção de myxozoários nos gêneros **Henneguya** e **Myxobolus**.
