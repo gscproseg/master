@@ -5,7 +5,7 @@
 
 [![Acessar o MLens App](https://img.shields.io/badge/Acessar%20o%20MLens%20App-blue?style=for-the-badge&logo=appveyor)](https://mlensapp.streamlit.app/)
 
-## Contetualização
+## Contextualização
 
 
 A classe Myxozoa é composta por mais de 70 gêneros e cerca de 2.600 espécies, todas endoparasitas obrigatórios (Lom et al., 2013; Fiala, 2015). Muitos desses parasitas são responsáveis por causar doenças graves conhecidas como mixosporidioses (Jones, Bartholomew, Zhang, 2015). De acordo com Lom e Arthur (1989), variáveis morfológicas e morfométricas são essenciais para a definição dos mixosporos e seu agrupamento taxonômico.
@@ -52,12 +52,7 @@ A Tabela 2 resume os resultados dos modelos YOLOv5n, YOLOv5s, YOLOv5m e YOLOv5l 
 Matrizes de Confusão
 A matriz de confusão é uma tabela que apresenta a contagem desses valores, geralmente organizada da seguinte forma:
 
-![Confusion Matrix](https://raw.githubusercontent.com/gscproseg/master/main/Figure20.jpg)
-
-
-
-
-
+![Confusion_Matrix](https://raw.githubusercontent.com/gscproseg/master/main/Figure20.jpg)
 
 
 
