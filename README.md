@@ -17,7 +17,8 @@ Com o advento da Inteligência Artificial (IA), impulsionada por avanços contí
 Neste trabalho, desenvolvemos o MLens, um WebAPP em versão beta projetado para realizar a detecção e classificação automatizada dos gêneros Myxobolus e Henneguya em imagens de microscopia de luz. Usando a rede neural YOLOv5, buscamos contribuir para uma maior eficiência e precisão no diagnóstico parasitológico.
 
 
-| A Figura 1 representa nosso Pipeline | ![Figura 1](https://raw.githubusercontent.com/gscproseg/master/main/Figure1.png) |
+| A Figura 1 representa nosso Pipeline |
+![Figura 1](https://raw.githubusercontent.com/gscproseg/master/main/Figure1.png) |
 
 
 A **Tabela 1**  resume os principais hiperparâmetros usados durante o treinamento dos modelos, conforme destacado por _Huang et al. (2018)_ e _Du (2018)_. Esses parâmetros foram essenciais para otimizar a detecção de myxozoários nos gêneros **Henneguya** e **Myxobolus**.
@@ -52,7 +53,7 @@ A Tabela 2 resume os resultados dos modelos YOLOv5n, YOLOv5s, YOLOv5m e YOLOv5l 
 Matrizes de Confusão
 A matriz de confusão é uma tabela que apresenta a contagem desses valores, geralmente organizada da seguinte forma:
 
-![Confusion_Matrix](https://raw.githubusercontent.com/gscproseg/master/main/Figure20.jpg)
+![Confusion_Matrix](https://raw.githubusercontent.com/gscproseg/master/main/Figure20.png)
 
 
 
